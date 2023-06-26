@@ -1,0 +1,4 @@
+images:
+  - name: woolpret-geonode
+    dockerfile: deployment/docker/Dockerfile
+    buildPath: .
