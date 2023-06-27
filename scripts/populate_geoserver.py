@@ -1,5 +1,6 @@
 import sys
-from os import environ
+from os import environ, getcwd
+from os.path import join
 
 import psycopg2
 from geo.Geoserver import Geoserver
@@ -74,6 +75,10 @@ def publish_layer_stores(geo_site_url, username, user_pass, workspace_name, pg_h
             geo.publish_featurestore(workspace='%s'
                                                % workspace_name, store_name='%s' % workspace_name,
                                      pg_table='%s' % table)
+           data_path = join(getcwd(),'styles','%s.sld' % table)
+            geo.upload_style(path=r'%s' % data_path, workspace='%s' % GEO_WORKSPACE)
+            geo.publish_style(layer_name='%s' % table, style_name='%s' % table, workspace='%s' % GEO_WORKSPACE)
+            
 
 
 def recalculate_bbox(geo_site_url, username, user_pass, workspace_name, pg_host, pg_user, pg_pass, pg_name):

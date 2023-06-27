@@ -22,8 +22,8 @@ load the data into a PostgreSQL database.
     ```bash
     python3 deployment/populate_geoserver.py
     ```
-to populate the GeoServer instance with layers you have registered in the database.
-**Note** The script assumes you have installed a couple of python packages:
+    to populate the GeoServer instance with layers you have registered in the database.
+    **Note** The script assumes you have installed a couple of python packages:
     ```bash
     pip3 install geoserver-rest
     pip3 install requests
