@@ -27,7 +27,7 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="C:/PROGRA~1/QGIS32~1.0/apps/qgis/svg/crosses/Cross6.svg?fill=%23000000&amp;fill-opacity=1&amp;outline=%23000000&amp;outline-opacity=1&amp;outline-width=0"/>
+                    <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/transformer_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
