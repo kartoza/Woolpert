@@ -11,12 +11,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyBmaWxsPSIjMDAwMDAwIiB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIsMkExMCwxMCwwLDEsMCwyMiwxMiwxMCwxMCwwLDAsMCwxMiwyWm00LjM5LDE0LjlhMTEuNjcsMTEuNjcsMCwwLDEtMS45NC40NywxMi45MiwxMi45MiwwLDAsMS0xLjg2LjEzLDQuNzcsNC43NywwLDAsMS0zLjcxLTEuNDJBNS44OSw1Ljg5LDAsMCwxLDcuNjEsMTIsNS4zOSw1LjM5LDAsMCwxLDkuMDksOCw1LjYxLDUuNjEsMCwwLDEsMTMuMiw2LjVhNy45MSw3LjkxLDAsMCwxLDMuMTguNjZMMTUuNjMsOWE1LjQ0LDUuNDQsMCwwLDAtMi40NC0uNTgsMywzLDAsMCwwLTIuMzYsMUEzLjg1LDMuODUsMCwwLDAsOS45NCwxMmE0LjI4LDQuMjgsMCwwLDAsLjcyLDIuNjcsMi40NiwyLjQ2LDAsMCwwLDIuMDcuOTEsNy4wNiw3LjA2LDAsMCwwLDEuNDUtLjE0VjEzLjIzaC0ybDAtMS44OWg0LjI0WiIvPjwvc3ZnPg==?fill=%23ff0000&amp;fill-opacity=1&amp;outline=%23232323&amp;outline-opacity=1&amp;outline-width=0"/>
+                <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/generator_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyBmaWxsPSIjMDAwMDAwIiB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIsMkExMCwxMCwwLDEsMCwyMiwxMiwxMCwxMCwwLDAsMCwxMiwyWm00LjM5LDE0LjlhMTEuNjcsMTEuNjcsMCwwLDEtMS45NC40NywxMi45MiwxMi45MiwwLDAsMS0xLjg2LjEzLDQuNzcsNC43NywwLDAsMS0zLjcxLTEuNDJBNS44OSw1Ljg5LDAsMCwxLDcuNjEsMTIsNS4zOSw1LjM5LDAsMCwxLDkuMDksOCw1LjYxLDUuNjEsMCwwLDEsMTMuMiw2LjVhNy45MSw3LjkxLDAsMCwxLDMuMTguNjZMMTUuNjMsOWE1LjQ0LDUuNDQsMCwwLDAtMi40NC0uNTgsMywzLDAsMCwwLTIuMzYsMUEzLjg1LDMuODUsMCwwLDAsOS45NCwxMmE0LjI4LDQuMjgsMCwwLDAsLjcyLDIuNjcsMi40NiwyLjQ2LDAsMCwwLDIuMDcuOTEsNy4wNiw3LjA2LDAsMCwwLDEuNDUtLjE0VjEzLjIzaC0ybDAtMS44OWg0LjI0WiIvPjwvc3ZnPg=="/>
+                <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/generator_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
