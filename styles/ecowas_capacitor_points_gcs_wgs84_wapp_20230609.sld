@@ -11,12 +11,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyBmaWxsPSIjMDAwMDAwIiB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0yMiAxMUgxNC42QzE0LjcgOS40IDE1LjEgNy45IDE1LjggNi40TDE0IDUuNUMxMiA5LjUgMTIgMTQuNCAxNCAxOC40TDE1LjggMTcuNUMxNS4xIDE2LjEgMTQuNyAxNC41IDE0LjYgMTIuOUgyMlYxMVoiLz4NCjxwYXRoIGQ9Ik05IDExSDJWMTNIOVYxOUgxMVY1SDlWMTFaIi8+DQo8L3N2Zz4=?fill=%23ff0000&amp;fill-opacity=1&amp;outline=%23232323&amp;outline-opacity=1&amp;outline-width=0"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/capacitor_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="base64:PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IS0tIFVwbG9hZGVkIHRvOiBTVkcgUmVwbywgd3d3LnN2Z3JlcG8uY29tLCBHZW5lcmF0b3I6IFNWRyBSZXBvIE1peGVyIFRvb2xzIC0tPg0KPHN2ZyBmaWxsPSIjMDAwMDAwIiB3aWR0aD0iODAwcHgiIGhlaWdodD0iODAwcHgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4NCjxwYXRoIGQ9Ik0yMiAxMUgxNC42QzE0LjcgOS40IDE1LjEgNy45IDE1LjggNi40TDE0IDUuNUMxMiA5LjUgMTIgMTQuNCAxNCAxOC40TDE1LjggMTcuNUMxNS4xIDE2LjEgMTQuNyAxNC41IDE0LjYgMTIuOUgyMlYxMVoiLz4NCjxwYXRoIGQ9Ik05IDExSDJWMTNIOVYxOUgxMVY1SDlWMTFaIi8+DQo8L3N2Zz4="/>
+                <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/capacitor_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
