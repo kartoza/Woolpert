@@ -20,12 +20,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                 <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydrid.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydrid.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-                <se:OnlineResource xlink:type="simple" xlink:href="crosses/Star3.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydrid.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -58,12 +58,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-              <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydro.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydro.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-              <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydro.svg"/>   
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_hydro.svg"/>   
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -96,12 +96,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-             <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_solar.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_solar.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-              <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_solar.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_solar.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -134,12 +134,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                  <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_wind.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_wind.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-                  <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_wind.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_wind.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -172,12 +172,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                 <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_thermal.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_thermal.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-                  <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_thermal.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/powerplants_thermal.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->

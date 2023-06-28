@@ -11,12 +11,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-                  <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/reactor_points.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/reactor_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-                <se:<OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/reactor_points.svg"/>
+               <OnlineResource xlink:type="simple" xlink:href="file:///opt/geoserver/data_dir/styles/svg/reactor_points.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
