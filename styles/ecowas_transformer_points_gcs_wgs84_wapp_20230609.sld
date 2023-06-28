@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:se="http://www.opengis.net/se" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" version="1.1.0">
+<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:se="http://www.opengis.net/se" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc">
   <NamedLayer>
     <se:Name>ECOWAS_Transformer_Points_GCS_WGS84_WAPP</se:Name>
     <UserStyle>
@@ -27,12 +27,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/transformer_points.svg"/>
+                <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/transformer_points_2.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/transformer_points.svg"/>
+                <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/transformer_points_2.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -46,7 +46,7 @@
                   <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
                 </se:Stroke>
               </se:Mark>
-              <se:Size>11</se:Size>
+              <se:Size>10</se:Size>
             </se:Graphic>
           </se:PointSymbolizer>
         </se:Rule>

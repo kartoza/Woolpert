@@ -12,7 +12,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>GenType</ogc:PropertyName>
+              <ogc:PropertyName>gentype</ogc:PropertyName>
               <ogc:Literal>Hybrid</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -20,12 +20,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_hydrid.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_hydrid.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_hydrid.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_hydrid.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -50,7 +50,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>GenType</ogc:PropertyName>
+              <ogc:PropertyName>gentype</ogc:PropertyName>
               <ogc:Literal>Hydro</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -58,12 +58,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_hydro.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_hydro.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_hydro.svg"/>   
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_hydro.svg"/>   
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -88,7 +88,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>GenType</ogc:PropertyName>
+              <ogc:PropertyName>gentype</ogc:PropertyName>
               <ogc:Literal>Solar</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -96,12 +96,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_solar.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_solar.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_solar.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_solar.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -126,7 +126,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>GenType</ogc:PropertyName>
+              <ogc:PropertyName>gentype</ogc:PropertyName>
               <ogc:Literal>Wind</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -134,12 +134,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_wind.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_wind.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_wind.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_wind.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
@@ -164,7 +164,7 @@
           </se:Description>
           <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
             <ogc:PropertyIsEqualTo>
-              <ogc:PropertyName>GenType</ogc:PropertyName>
+              <ogc:PropertyName>gentype</ogc:PropertyName>
               <ogc:Literal>Thermal</ogc:Literal>
             </ogc:PropertyIsEqualTo>
           </ogc:Filter>
@@ -172,12 +172,12 @@
             <se:Graphic>
               <!--Parametric SVG-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_thermal.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_thermal.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Plain SVG fallback, no parameters-->
               <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver/data_dir/styles/svg/powerplants_thermal.svg"/>
+               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/powerplants_thermal.svg"/>
                 <se:Format>image/svg+xml</se:Format>
               </se:ExternalGraphic>
               <!--Well known marker fallback-->
