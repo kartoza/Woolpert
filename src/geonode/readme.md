@@ -5,3 +5,4 @@
 - Updated geonode/geonode/settings.py added `ACCOUNT_FORMS = {'signup': 'geonode.people.forms.CustomSignupFormWoolpert'}` at bottom
 
 Run `python manage.py makemigrations` for two added columns to model Profile
+Good chance of having to run `pip install django-countries`
