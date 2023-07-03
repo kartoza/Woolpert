@@ -1,7 +1,7 @@
 FROM python:3.10.2-buster AS prod
 LABEL GeoNode development team
 
-RUN mkdir -p /usr/src/delft
+RUN mkdir -p /usr/src/woolpert
 
 # Enable postgresql-client-13
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
@@ -32,7 +32,7 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN apt-get install -y devscripts build-essential debhelper pkg-kde-tools sharutils
 # RUN git clone https://salsa.debian.org/debian-gis-team/proj.git /tmp/proj
-# RUN cd /tmp/proj && debuild -i -us -uc -b && dpkg -i ../*.deb
+# RUN cd /tmp/proj && debuild -i -us -uc -b && dpkg -i ../*.deb 
 
 # Install pip packages
 RUN pip install pip --upgrade \
@@ -45,8 +45,8 @@ RUN pip install pylibmc \
     && pip install sherlock
 
 # add bower and grunt command
-COPY src /usr/src/delft/
-WORKDIR /usr/src/delft
+COPY src /usr/src/woolpert/
+WORKDIR /usr/src/woolpert
 
 COPY src/monitoring-cron /etc/cron.d/monitoring-cron
 RUN chmod 0644 /etc/cron.d/monitoring-cron
@@ -56,8 +56,8 @@ RUN service cron start
 
 COPY src/wait-for-databases.sh /usr/bin/wait-for-databases
 RUN chmod +x /usr/bin/wait-for-databases
-RUN chmod +x /usr/src/delft/tasks.py \
-    && chmod +x /usr/src/delft/entrypoint.sh
+RUN chmod +x /usr/src/woolpert/tasks.py \
+    && chmod +x /usr/src/woolpert/entrypoint.sh
 
 COPY src/celery.sh /usr/bin/celery-commands
 RUN chmod +x /usr/bin/celery-commands
@@ -81,7 +81,7 @@ RUN rm -rf /var/lib/apt/lists/*
 EXPOSE 8000
 
 # We provide no command or entrypoint as this image can be used to serve the django project or run celery tasks
-# ENTRYPOINT /usr/src/delft/entrypoint.sh
+# ENTRYPOINT /usr/src/woolpert/entrypoint.sh
 
 FROM prod AS dev
 

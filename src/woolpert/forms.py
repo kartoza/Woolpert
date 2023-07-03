@@ -24,19 +24,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext as _
 from allauth.account.forms import SignupForm
-from captcha.fields import ReCaptchaField
-from .models import Profile
 from django_countries.fields import CountryField
 # Ported in from django-registration
 attrs_dict = {"class": "required"}
-
-
-class AllauthReCaptchaSignupForm(forms.Form):
-    captcha = ReCaptchaField()
-
-    def signup(self, request, user):
-        """Required, or else it thorws deprecation warnings"""
-        pass
 
 class CustomSignupFormWoolpert(SignupForm):
 
@@ -62,55 +52,7 @@ class CustomSignupFormWoolpert(SignupForm):
         user.city = self.cleaned_data["city"]
         user.area = self.cleaned_data["area"]
         user.country = self.cleaned_data["country"]
-        user.reason_joining = self.cleaned_data["reason_joining"]
+        user.profile = self.cleaned_data["reason_joining"]
         user.organization_type = self.cleaned_data["organization_type"]
         user.save()
 
-class ProfileCreationForm(UserCreationForm):
-    class Meta:
-        model = get_user_model()
-        fields = ("username",)
-
-    def clean_username(self):
-        # Since User.username is unique, this check is redundant,
-        # but it sets a nicer error message than the ORM. See #13147.
-        username = self.cleaned_data["username"]
-        try:
-            get_user_model().objects.get(username=username)
-        except get_user_model().DoesNotExist:
-            return username
-        raise forms.ValidationError(
-            self.error_messages["duplicate_username"],
-            code="duplicate_username",
-        )
-
-
-class ProfileChangeForm(UserChangeForm):
-    class Meta:
-        model = get_user_model()
-        fields = "__all__"
-
-
-class ForgotUsernameForm(forms.Form):
-    email = forms.EmailField(widget=forms.TextInput(attrs=dict(attrs_dict, maxlength=75)), label=_("Email Address"))
-
-
-class ProfileForm(forms.ModelForm):
-    keywords = taggit.forms.TagField(
-        label=_("Keywords"), required=False, help_text=_("A space or comma-separated list of keywords")
-    )
-
-    class Meta:
-        model = get_user_model()
-        exclude = (
-            "user",
-            "password",
-            "last_login",
-            "groups",
-            "user_permissions",
-            "username",
-            "is_staff",
-            "is_superuser",
-            "is_active",
-            "date_joined",
-        )
