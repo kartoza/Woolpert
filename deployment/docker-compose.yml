@@ -12,7 +12,7 @@ x-common-django:
   env_file:
     - .env
   volumes:
-    - ../src:/usr/src/delft
+    - ../src:/usr/src/woolpert
     - statics:/mnt/volumes/statics
     - geoserver-data-dir:/geoserver_data/data
     - backup-restore:/backup_restore
@@ -38,8 +38,8 @@ services:
       retries: 10
     environment:
       - IS_CELERY=False
-    entrypoint: [ "/usr/src/delft/entrypoint.sh" ]
-    command: "uwsgi --ini /usr/src/delft/uwsgi.ini"
+    entrypoint: [ "/usr/src/woolpert/entrypoint.sh" ]
+    command: "uwsgi --ini /usr/src/woolpert/uwsgi.ini"
 
   # Celery worker that executes celery tasks created by Django.
   celery:
@@ -89,7 +89,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: kartoza/geoserver:geonode-2.23.x
+    image: kartoza/geoserver:geonode-2.23.0.x
     container_name: ${COMPOSE_PROJECT_NAME}_geoserver
     healthcheck:
       test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/ows"
