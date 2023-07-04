@@ -2,6 +2,18 @@
 {% block override_local_config %}
 <script>
     window.__GEONODE_CONFIG__.overrideLocalConfig = function(localConfig, _) {
+        var removePluginName = "FeatureEditor";
+        var pluginPageName = "dataset_edit_data_viewer";
+        var newMapPlugins = [];
+        for (var i = 0; i < localConfig.plugins[pluginPageName].length; i++) {
+            var currentPlugin = localConfig.plugins[pluginPageName][i];
+            var isRemovePlugin = currentPlugin.name === removePluginName;
+            if (!isRemovePlugin) {
+                newMapPlugins.push(currentPlugin);
+            }
+        }
+        localConfig.plugins[pluginPageName] = newMapPlugins;
+        return localConfig;
         // Here the localConfig can be overridden and/or extended
         return localConfig;
     };
