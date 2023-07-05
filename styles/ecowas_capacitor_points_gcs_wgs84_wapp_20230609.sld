@@ -1,40 +1,118 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:se="http://www.opengis.net/se" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" version="1.1.0">
+<?xml version="1.0" encoding="ISO-8859-1"?>
+ <StyledLayerDescriptor version="1.0.0"
+  xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd"
+  xmlns="http://www.opengis.net/sld"
+  xmlns:ogc="http://www.opengis.net/ogc"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <NamedLayer>
-    <se:Name>ECOWAS_Capacitor_Points_GCS_WGS84_WAPP</se:Name>
-    <UserStyle>
-      <se:Name>ECOWAS_Capacitor_Points_GCS_WGS84_WAPP</se:Name>
-      <se:FeatureTypeStyle>
-        <se:Rule>
-          <se:Name>Single symbol</se:Name>
-          <se:PointSymbolizer>
-            <se:Graphic>
-              <!--Parametric SVG-->
-              <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/capacitor_points.svg"/>
-                <se:Format>image/svg+xml</se:Format>
-              </se:ExternalGraphic>
-              <!--Plain SVG fallback, no parameters-->
-              <se:ExternalGraphic>
-               <se:OnlineResource xlink:type="simple" xlink:href="file:///geoserver_data/data/styles/svg/capacitor_points.svg"/>
-                <se:Format>image/svg+xml</se:Format>
-              </se:ExternalGraphic>
-              <!--Well known marker fallback-->
-              <se:Mark>
-                <se:WellKnownName>square</se:WellKnownName>
-                <se:Fill>
-                  <se:SvgParameter name="fill">#ff0000</se:SvgParameter>
-                </se:Fill>
-                <se:Stroke>
-                  <se:SvgParameter name="stroke">#232323</se:SvgParameter>
-                  <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
-                </se:Stroke>
-              </se:Mark>
-              <se:Size>14</se:Size>
-            </se:Graphic>
-          </se:PointSymbolizer>
-        </se:Rule>
-      </se:FeatureTypeStyle>
-    </UserStyle>
-  </NamedLayer>
+   <Name>Cluster points</Name>
+   <UserStyle>
+   <!-- Styles can have names, titles and abstracts -->
+    <Title>Cluster points</Title>
+    <Abstract>Styling using cluster points server side</Abstract>
+    <FeatureTypeStyle>
+      <Transformation>
+        <ogc:Function name="gs:PointStacker">
+          <ogc:Function name="parameter">
+            <ogc:Literal>data</ogc:Literal>
+          </ogc:Function>
+          <ogc:Function name="parameter">
+            <ogc:Literal>cellSize</ogc:Literal>
+            <ogc:Literal>30</ogc:Literal>
+          </ogc:Function>
+          <ogc:Function name="parameter">
+            <ogc:Literal>outputBBOX</ogc:Literal>
+            <ogc:Function name="env">
+           <ogc:Literal>wms_bbox</ogc:Literal>
+            </ogc:Function>
+          </ogc:Function>
+          <ogc:Function name="parameter">
+            <ogc:Literal>outputWidth</ogc:Literal>
+            <ogc:Function name="env">
+           <ogc:Literal>wms_width</ogc:Literal>
+            </ogc:Function>
+          </ogc:Function>
+          <ogc:Function name="parameter">
+            <ogc:Literal>outputHeight</ogc:Literal>
+            <ogc:Function name="env">
+              <ogc:Literal>wms_height</ogc:Literal>
+            </ogc:Function>
+          </ogc:Function>
+        </ogc:Function>
+      </Transformation>
+     
+     <Rule>
+        <Name>ruleGT1</Name>
+        <Title>Capacitor Points</Title>
+        <ogc:Filter>
+          <ogc:PropertyIsGreaterThanOrEqualTo>
+            <ogc:PropertyName>count</ogc:PropertyName>
+            <ogc:Literal>1</ogc:Literal>
+          </ogc:PropertyIsGreaterThanOrEqualTo>
+        </ogc:Filter>
+	    <MinScaleDenominator>4000000</MinScaleDenominator>
+        <PointSymbolizer>
+          <Graphic>
+            <Mark>
+              <WellKnownName>circle</WellKnownName>
+              <Fill>
+                <CssParameter name="fill">#9a458c</CssParameter>
+              </Fill>
+            </Mark>
+            <Size>15</Size>
+          </Graphic>
+        </PointSymbolizer>
+        <TextSymbolizer>
+          <Label>
+            <ogc:PropertyName>count</ogc:PropertyName>
+          </Label>
+          <Font>
+            <CssParameter name="font-family">Arial</CssParameter>
+            <CssParameter name="font-size">10</CssParameter>
+            <CssParameter name="font-weight">bold</CssParameter>
+          </Font>
+          <LabelPlacement>
+            <PointPlacement>
+              <AnchorPoint>
+                <AnchorPointX>0.5</AnchorPointX>
+                <AnchorPointY>0.5</AnchorPointY>
+              </AnchorPoint>
+            </PointPlacement>
+          </LabelPlacement>
+          <Halo>
+             <Radius>0</Radius>
+             <Fill>
+               <CssParameter name="fill">#000000</CssParameter>
+               <CssParameter name="fill-opacity">0.9</CssParameter>
+             </Fill>
+          </Halo>
+          <Fill>
+            <CssParameter name="fill">#FFFFFF</CssParameter>
+            <CssParameter name="fill-opacity">1.0</CssParameter>
+          </Fill>
+        </TextSymbolizer>
+      </Rule>
+	  <Rule>
+          <Name>Capacitor Points</Name>
+		  <MaxScaleDenominator>4000000</MaxScaleDenominator>
+          <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>circle</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#9a458c</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#232323</CssParameter>
+                  <CssParameter name="stroke-width">0.5</CssParameter>
+                </Stroke>
+              </Mark>
+              <Size>7</Size>
+            </Graphic>
+          </PointSymbolizer>
+        </Rule>
+    </FeatureTypeStyle>
+  </UserStyle>
+ </NamedLayer>
 </StyledLayerDescriptor>
