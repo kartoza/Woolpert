@@ -1,55 +1,56 @@
 /* top bar and bars beneath carousel*/
 .gn-menu {
-    background-color: #111522 !important;
- }
- 
- /* something */
- .form-control {
-    color: #111522 !important;
- }
- 
- /* footer */
- .gn-footer {
-    background-color: #111522 !important;
- }
- 
- /* title bar */
- .gn-hero {
-    background-color: #3F6E45 !important;
-    margin-top: -16px;
- }
- 
- /* colour behind carousel */
- .gn-carousel {
-    background-color: #3F6E45 !important;
- }
- 
- /* links in footer */
- .nav-link {
-    color: #FFFFFF !important;
- }
- 
- /* text on bar beneath carousel */ 
- .badge {
-    color: #FFFFFF !important;
- }
- 
- /* button stuff */
- .btn-default {
-    color: #FFFFFF !important;
    background-color: #111522 !important;
- }
- .btn-primary {
-    background-color: #C9313D !important;
- }
- 
- /* background behind resources */
- .gn-grid-container {
-    background-color: #F7F7F7 !important;
- }
- 
- /* dropdown menu */
- .dropdown-menu {
-    background-color: #F7F7F7 !important;
-    colour: #111522 !important;
- }
+}
+
+/* something */
+.form-control {
+   color: #111522 !important;
+}
+
+/* footer */
+.gn-footer {
+   background-color: #111522 !important;
+}
+
+/* title bar */
+.gn-hero {
+   background-color: #3F6E45 !important;
+   margin-top: -16px;
+}
+
+/* colour behind carousel */
+.gn-carousel {
+   background-color: #3F6E45 !important;
+}
+
+/* links in footer */
+.nav-link {
+   color: #FFFFFF !important;
+}
+
+/* text on bar beneath carousel */ 
+.badge {
+   color: #FFFFFF !important;
+}
+
+/* button stuff */
+.btn-default {
+   color: #FFFFFF !important;
+   background-color: #111522 !important;
+}
+.btn-primary {
+   background-color: #C9313D !important;
+   border-color: #C9313D !important;
+}
+
+/* background behind resources */
+.gn-grid-container {
+   background-color: #F7F7F7 !important;
+}
+
+/* dropdown menu */
+.dropdown-menu {
+   background-color: #F7F7F7 !important;
+   colour: #111522 !important;
+}
