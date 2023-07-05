@@ -73,6 +73,7 @@ RUN chmod +x /usr/bin/celery-cmd
 
 RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements.txt
 RUN pip install --upgrade  -e .
+RUN python setup.py install
 
 # Cleanup apt update lists
 RUN rm -rf /var/lib/apt/lists/*
