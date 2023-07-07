@@ -32,6 +32,7 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN apt-get install -y devscripts build-essential debhelper pkg-kde-tools sharutils
 # RUN git clone https://salsa.debian.org/debian-gis-team/proj.git /tmp/proj
+RUN apt-get install gdal-bin
 # RUN cd /tmp/proj && debuild -i -us -uc -b && dpkg -i ../*.deb 
 
 # Install pip packages
@@ -70,7 +71,8 @@ RUN chmod +x /usr/bin/celery-cmd
 # # Install logstash and centralized dashboard dependencies
 # RUN cd /usr/src/geonode-contribs/geonode-logstash; pip install --upgrade  -e . \
 #     cd /usr/src/geonode-contribs/ldap; pip install --upgrade  -e .
-
+# RUN python -m venv venv
+# RUN . ./venv/bin/activate
 RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements.txt
 RUN pip install --upgrade  -e .
 RUN python setup.py install
@@ -86,7 +88,7 @@ EXPOSE 8000
 
 FROM prod AS dev
 
-RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements-dev.txt
+RUN pip install -r requirements-dev.txt
 RUN pip install --upgrade  -e .
 
 # This section taken on 2 July 2015 from
