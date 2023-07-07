@@ -36,3 +36,10 @@ load the data into a PostgreSQL database.
 6) Setup a management job to update the layers in the GeoNode so that they can be visible in GeoNode.
 ![management_command](images/management_command_job.png)
 7) Run the job and then inspect the layers in GeoNode.
+
+# Creating button for admin upload
+1) Log into django administration
+2) Click on "Menu Items"
+3) Click on the "Add menu button"
+4) Set the title to "Upload" (nb: the app looks for the Upload tag)
+5) Set the url to "/admin_upload/"
