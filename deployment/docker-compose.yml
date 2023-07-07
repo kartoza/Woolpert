@@ -102,11 +102,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - statics:/mnt/volumes/statics
       - geoserver-data-dir:/geoserver_data/data
       - backup-restore:/backup_restore
-      - data:/data
-      - tmp:/tmp
+      - ../scripts:/geo_scripts
     restart: on-failure
     depends_on:
       db:
@@ -127,20 +125,45 @@ services:
   # PostGIS database.
   db:
     # use geonode official postgis 13 image
-    image: geonode/postgis:13
-    command: postgres -c "max_connections=${POSTGRESQL_MAX_CONNECTIONS}"
-    container_name: ${COMPOSE_PROJECT_NAME}_db
-    env_file:
-      - .env
+    image: kartoza/postgis:15-3.3
+    container_name: db4${COMPOSE_PROJECT_NAME}
+    environment:
+      # If you need to create multiple database you can add coma separated databases eg gis,data
+      - POSTGRES_DB=${GEONODE_DATABASE},${GEONODE_GEODATABASE},
+      - GEONODE_DATABASE_USER=${GEONODE_DATABASE_USER}
+      - GEONODE_DATABASE_PASSWORD=${GEONODE_DATABASE_PASSWORD}
+      - GEONODE_GEODATABASE_USER=${GEONODE_GEODATABASE_USER}
+      - GEONODE_GEODATABASE_PASSWORD=${GEONODE_GEODATABASE_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASSWORD}
+      - ALLOW_IP_RANGE=0.0.0.0/0
+      # Add extensions you need to be enabled by default in the DB. Default are the five specified below
+      - POSTGRES_MULTIPLE_EXTENSIONS=postgis,hstore,postgis_topology,postgis_raster,pgrouting
+      - RUN_AS_ROOT=true
     volumes:
-      - dbdata:/var/lib/postgresql/data
-      - dbbackups:/pg_backups
+      - dbdata:/var/lib/postgresql
+      - ./db_data:/data
+      - ../scripts/setup-db.sh:/docker-entrypoint-initdb.d/setup-db.sh
     restart: on-failure
     healthcheck:
-      test: "pg_isready -d postgres -U postgres"
+      test: "PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h 127.0.0.1 -U ${POSTGRES_USER} -d ${GEONODE_DATABASE}"
     # uncomment to enable remote connections to postgres
-    #ports:
-    #  - "5432:5432"
+    ports:
+      - "5432"
+  dbbackups:
+    image: kartoza/pg-backup:15-3.3
+    volumes:
+      - dbbackups:/backups
+    environment:
+      - DUMPPREFIX=PGdb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASSWORD}
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=db
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
 
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
