@@ -57,7 +57,7 @@ WSGI_APPLICATION = "{}.wsgi.application".format(PROJECT_NAME)
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
 
 _DEFAULT_LANGUAGES = """(
-    ('en', 'English'),
+    ('en-US', 'English'),
     ('fr', 'Français'),
 )"""
 
