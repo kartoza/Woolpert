@@ -44,14 +44,14 @@
      
      <Rule>
         <Name>ruleGT1</Name>
-        <Title>Generator Points</Title>
+        <Title>Clustered Generator Points</Title>
         <ogc:Filter>
           <ogc:PropertyIsGreaterThanOrEqualTo>
             <ogc:PropertyName>count</ogc:PropertyName>
             <ogc:Literal>1</ogc:Literal>
           </ogc:PropertyIsGreaterThanOrEqualTo>
         </ogc:Filter>
-	    <MinScaleDenominator>4000000</MinScaleDenominator>
+	    <MinScaleDenominator>1000000</MinScaleDenominator>
         <PointSymbolizer>
           <Graphic>
             <Mark>
@@ -95,7 +95,7 @@
       </Rule>
 	  <Rule>
           <Name>Generator Points</Name>
-		  <MaxScaleDenominator>4000000</MaxScaleDenominator>
+		  <MaxScaleDenominator>1000000</MaxScaleDenominator>
           <PointSymbolizer>
             <Graphic>
               <Mark>
