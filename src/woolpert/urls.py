@@ -19,12 +19,20 @@
 #########################################################################
 
 from geonode.urls import urlpatterns
+from django.urls import path
+from admin_upload import views
+from django.conf.urls import  url
 
-'''
 # You can register your own urlpatterns here
+# urlpatterns = [
+#     url(r'^admin_form_1/',
+#         views.admin_form,
+#         name='admin_form'),
+#  ] + urlpatterns
+
 urlpatterns = [
-    url(r'^/?$',
-        homepage,
-        name='home'),
+    url(r'^admin_upload/',
+        views.admin_form,
+        name='admin_upload'),
  ] + urlpatterns
-'''
+

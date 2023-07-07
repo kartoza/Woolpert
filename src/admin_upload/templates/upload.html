@@ -1,0 +1,72 @@
+
+{% extends "geonode_base.html" %}
+{% load static %}
+{% block body %}
+<h1>Upload Data</h1>
+
+<form method="post" >
+    {% csrf_token %}
+    <div class="form-group">
+        <label>Select a layer</label>
+        <select class="form-control" name="layer" id="selectLayer" required>
+            {% for layer in layers %}
+                <option value="{{layer.name}}">{{ layer }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Upload file (only xls, xlsx and zip containing esri files are allowd)</label>
+        <input type="file" class="form-control" id="excel_file"/>
+        <br>
+        <button id="showData" name="file" type="button" class="btn btn-secondary" style="width: 100%; display: none;" onclick="show()">Edit Data</button>
+    </div>
+
+    <div id="showTableData" style="display: none;">
+        <label>Select Data to upload</label>
+        <div id="excel_data" class="mt-5" style="overflow-x: scroll;overflow-y: scroll;max-height: 500px;"></div>
+        <br>
+        <div style="display: flex; flex-direction: row;">
+            <div>
+                <button type="button" class="btn btn-secondary" onclick="selectAll()" style="margin-right: 5px;">Select All</button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-secondary" onclick="unselectAll()">Unselect All</button>
+            </div>
+        </div>
+    </div>
+
+    <br>
+
+    <div id="finished" class="alert alert-success alert-dismissible" style="display: none;">
+        <p id="finished_msg"></p>
+    </div>
+
+    <div id="finished_warning" class="alert alert-warning alert-dismissible" style="display: none;">
+        <p id="finished_msg_war"></p>
+    </div>
+
+    <div id="error" class="alert alert-danger alert-dismissible" style="display: none;">
+        <p id="error_msg">Something went wrong and the file could not pe processed</p>
+    </div>
+    
+    <div id="wrong_format" class="alert alert-danger alert-dismissible" style="display: none;">
+        Only .xlsx, .xls and .shape file format are allowed
+    </div>
+
+    <br>
+    <button type="button" onclick="submitData()" class="btn btn-primary">Submit</button>
+
+</form>
+{% endblock %}
+
+{% block extra_script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.3/proj4.js"></script>
+<script type="text/javascript" src="{% static 'js/xlsx.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jszip.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jszip-utils.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/preprocess.js' %}"></script>
+<script src="{% static 'js/shapefile.js' %}"></script>
+<script src="{% static 'js/fancytable.min.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+{% endblock %}
