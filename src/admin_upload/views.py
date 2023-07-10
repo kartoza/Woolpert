@@ -6,6 +6,18 @@ import json
 import psycopg2
 import sys
 from woolpert import settings
+from decimal import *
+
+data_types = {
+    1560: bool,
+    16: bool,
+    17: bytes,
+    1043: str,
+    1182: "datetime",
+    701: float,
+    20: int,
+    189314: float
+}
 
 def admin_required(function):
     def wrap(request, *args, **kwargs):
@@ -23,30 +35,38 @@ def admin_required(function):
 def admin_form(request):
     if(request.POST):
         json_data = json.loads(request.POST.get('json_data'))
+
+        dbHost     = json_data["database_host"]
+        dbUsername = json_data["database_user"]
+        dbPassword = json_data["database_psw"]
+        dbName     = json_data["database_name"]
+
+        conn = psycopg2.connect(
+                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port="5432", sslmode='require'
+                )
+
         x_index = [i for i, x in enumerate(json_data["columns"]) if x == 'x_dd']
         y_index = [i for i, x in enumerate(json_data["columns"]) if x == 'y_dd']
 
-        dbHost     = settings.DATABASE_HOST
-        dbName  = settings.GEONODE_GEODATABASE
-        dbPassword = settings.GEONODE_GEODATABASE_PASSWORD
-        dbUsername    = settings.GEONODE_GEODATABASE_USER
-
         error_list = []
 
-        conn = psycopg2.connect(
-            database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port="5432"
-        )
         cursor = conn.cursor()
-        cursor.execute(f"SELECT max(fid) as max_id FROM {json_data['layer']}")
-        max_id = cursor.fetchall()
 
         cursor.execute(f"SELECT * FROM {json_data['layer']}")
         data = cursor.fetchall()
-        # cursor.execute("select oid,typname from pg_type;")
-        # list_type = cursor.fetchall()
-        # plus two for id and location
-        column_len = len(json_data['columns']) + 2
-        print(f"col {column_len} db {len(cursor.description)}")
+
+        is_geom = False
+        is_geom_uploaded = False
+        extra_len = 1
+        if (any('location' in i for i in cursor.description)):
+            if "location" in json_data['columns']:
+                is_geom_uploaded = True
+            else:
+                # if uploaded file was not shape file
+                extra_len = extra_len + 1
+            is_geom = True
+        
+        column_len = len(json_data['columns']) + extra_len
 
         if len(cursor.description) != column_len:
             context = {
@@ -56,22 +76,32 @@ def admin_form(request):
             return JsonResponse(context, status=200)
         
         columns_str = ""
-        for col in cursor.description:
-            columns_str = columns_str + f"{col[0]},"
+        for col in json_data['columns']:
+            columns_str = columns_str + f"{col},"
         columns_str = columns_str[:-1]
 
         increment_id = 1
         for row in json_data["rows"]:
-            id = int(max_id[0][0]) + increment_id
-
-            values_str = f"{id},"
+            values_str = ""
             for data in row:
+               try:
+                   if "'" in data:
+                       data = data.replace("'", "''")
+               except:
+                   pass
                values_str = values_str + f"'{data}',"
-            values_str = values_str + f"ST_SetSRID(ST_MakePoint({row[x_index[0]]}, {row[y_index[0]]}), 4326)"
-            
+            values_str = values_str[:-1]
+
             insert = conn.cursor()
             try:
-                insert.execute(f"INSERT INTO {json_data['layer']} ({columns_str}) VALUES ({values_str})")
+                insert.execute(f"INSERT INTO {json_data['layer']} ({columns_str}) VALUES ({values_str}) ON CONFLICT DO NOTHING")
+                
+                if is_geom and not is_geom_uploaded:
+                    insert.execute('SELECT LASTVAL()')
+                    lastid = insert.fetchone()[0]
+                    update = conn.cursor()
+                    update.execute(f"UPDATE {json_data['layer']} SET location = ST_SetSRID(ST_MakePoint({row[x_index[0]]}, {row[y_index[0]]}), 4326) WHERE fid = '{lastid}' ")
+                    
             except Exception as e:
                 error_list.append(str({f"row {increment_id}": e}))
             conn.commit()
@@ -87,3 +117,46 @@ def admin_form(request):
         "layers": layers
     }
     return render(request, "upload.html", context=context )
+
+def check_columns(request):
+    if request.POST:
+        json_data = json.loads(request.POST.get('json_data'))
+        error_list = []
+
+        dbHost     = json_data["database_host"]
+        dbUsername = json_data["database_user"]
+        dbPassword = json_data["database_psw"]
+        dbName     = json_data["database_name"]
+
+        conn = psycopg2.connect(
+                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port="5432", sslmode='require'
+                )
+
+        cursor = conn.cursor()
+
+        #retrieve columns for database
+        cursor.execute(f"SELECT * FROM {json_data['layer']}")
+        columns = cursor.description
+        
+        for col in columns:
+            col_index = [i for i, x in enumerate(json_data["columns"]) if x == col[0]]
+            if col_index:
+                for row in json_data["rows"]:
+                    data = row[col_index[0]]
+                    data_type = data_types.get(col[1])
+                    try:
+                        data_type(data)
+                    except:
+                        error_list.append(f"Data '{data}' in column '{col[0]}' is not in the correct format")
+        context = {
+            "status": "finished",
+            "errors": json.dumps(error_list)
+        }
+        return JsonResponse(context, status=200)
+
+        #get type of columns in database
+    context = {
+            "status": "empty request",
+            "errors": json.dumps(error_list)
+        }
+    return JsonResponse(context, status=200)

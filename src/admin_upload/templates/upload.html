@@ -7,6 +7,22 @@
 <form method="post" >
     {% csrf_token %}
     <div class="form-group">
+        <label>Database host </label>
+        <input type="text" id="database_host"  name="database_host" class="form-control" required/>
+    </div>
+    <div class="form-group">
+        <label>Database name </label>
+        <input type="text" id="database_name" name="database_name" class="form-control" required/>
+    </div>
+    <div class="form-group">
+        <label>Username </label>
+        <input type="text" id="database_user" name="database_user" class="form-control" required/>
+    </div>
+    <div class="form-group">
+        <label>Password </label>
+        <input type="password" id="database_psw" name="database_psw" class="form-control" required/>
+    </div>
+    <div class="form-group">
         <label>Select a layer</label>
         <select class="form-control" name="layer" id="selectLayer" required>
             {% for layer in layers %}
@@ -15,7 +31,7 @@
         </select>
     </div>
     <div class="form-group">
-        <label>Upload file (only xls, xlsx and zip containing esri files are allowd)</label>
+        <label>Upload file (only xls, xlsx and zip containing esri files are allowed. For excel only the first worksheet is processed)</label>
         <input type="file" class="form-control" id="excel_file"/>
         <br>
         <button id="showData" name="file" type="button" class="btn btn-secondary" style="width: 100%; display: none;" onclick="show()">Edit Data</button>
@@ -46,15 +62,19 @@
     </div>
 
     <div id="error" class="alert alert-danger alert-dismissible" style="display: none;">
-        <p id="error_msg">Something went wrong and the file could not pe processed</p>
+        <p id="error_msg">Could not connect to the database. Incorrect credentials</p>
     </div>
     
     <div id="wrong_format" class="alert alert-danger alert-dismissible" style="display: none;">
         Only .xlsx, .xls and .shape file format are allowed
     </div>
 
+    <div id="zip_error" class="alert alert-danger alert-dismissible" style="display: none;">
+        The zip file could not be read. Mandatory parts of the shp do not exist
+    </div>
     <br>
-    <button type="button" onclick="submitData()" class="btn btn-primary">Submit</button>
+    <button type="button" onclick="scanData()" class="btn btn-primary">Scan data</button>
+    <button type="button" id="submitFinal" onclick="submitData()" class="btn btn-primary" disabled>Submit</button>
 
 </form>
 {% endblock %}

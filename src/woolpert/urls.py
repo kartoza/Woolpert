@@ -34,5 +34,8 @@ urlpatterns = [
     url(r'^admin_upload/',
         views.admin_form,
         name='admin_upload'),
+    url(r'^check_columns/',
+        views.check_columns,
+        name='check_columns'),
  ] + urlpatterns
 
