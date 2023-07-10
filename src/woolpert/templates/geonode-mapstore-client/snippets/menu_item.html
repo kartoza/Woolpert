@@ -2,29 +2,16 @@
 {% if menu_item %}
 
     {% if menu_item.type == 'link' %}
-        {% if menu_item.label == 'Upload' and user.is_superuser %}
-            <li>
-                <a
-                    id={{ menu_item.label | slugify }}
-                    href="{{ menu_item.href }}"
-                    target="{{ menu_item.target }}"
-                    class="nav-link btn btn-{{variant|default:'default'}}"
-                >
-                    {% trans menu_item.label %}
-                </a>
-            </li>
-        {% elif menu_item.label != 'Upload'%}
-            <li>
-                <a
-                    id={{ menu_item.label | slugify }}
-                    href="{{ menu_item.href }}"
-                    target="{{ menu_item.target }}"
-                    class="nav-link btn btn-{{variant|default:'default'}}"
-                >
-                    {% trans menu_item.label %}
-                </a>
-            </li>
-        {% endif %}
+    <li>
+        <a
+            id={{ menu_item.label | slugify }}
+            href="{{ menu_item.href }}"
+            target="{{ menu_item.target }}"
+            class="nav-link btn btn-{{variant|default:'default'}}"
+        >
+            {% trans menu_item.label %}
+        </a>
+    </li>
         
     {% endif %}
     {% if menu_item.type == 'divider' %}
@@ -54,6 +41,21 @@
                     
                     {% for child_item in menu_item.items %}
                         {% if child_item.type == 'link' %}
+                            {% if child_item.label == 'Admin' and user.is_superuser %}
+                        
+                            <li>
+                                <a
+                                    href="{% url 'admin_upload' %}"
+                                    target="{{ child_item.target }}"
+                                >
+                                    Upload
+                                    {% if menu_item.badge %}
+                                        <span class="badge">{{ menu_item.badge }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+
+                            {% endif %}
                             
                             <li>
                                 <a
