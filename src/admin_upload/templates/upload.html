@@ -15,6 +15,10 @@
         <input type="text" id="database_name" name="database_name" class="form-control" required/>
     </div>
     <div class="form-group">
+        <label>Port </label>
+        <input type="text" id="database_psw" name="database_port" class="form-control" required/>
+    </div>
+    <div class="form-group">
         <label>Username </label>
         <input type="text" id="database_user" name="database_user" class="form-control" required/>
     </div>
@@ -22,6 +26,7 @@
         <label>Password </label>
         <input type="password" id="database_psw" name="database_psw" class="form-control" required/>
     </div>
+    
     <div class="form-group">
         <label>Select a layer</label>
         <select class="form-control" name="layer" id="selectLayer" required>
@@ -73,7 +78,7 @@
         The zip file could not be read. Mandatory parts of the shp do not exist
     </div>
     <br>
-    <button type="button" onclick="scanData()" class="btn btn-primary">Scan data</button>
+    <button type="button" id ="scan" onclick="scanData()" class="btn btn-primary">Scan data</button>
     <button type="button" id="submitFinal" onclick="submitData()" class="btn btn-primary" disabled>Submit</button>
 
 </form>
@@ -183,6 +188,10 @@ function submitData(){
                     document.getElementById("error_msg").innerHTML = data["errors"]
                     document.getElementById("error").style.display = "block"
                 }   
+                else if(data["status"] == "404"){
+                    document.getElementById("error_msg").innerHTML = "Could not connect to Database"
+                    document.getElementById("error").style.display = "block"
+                }
                 else if(data["status"] == "finished"){
                     if(data["errors"] == "[]"){
                         document.getElementById("finished_msg").innerHTML = "The upload has finished with no errors"
@@ -195,6 +204,7 @@ function submitData(){
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                document.getElementById("error_msg").innerHTML = "Something went wrong and the data could not be submitted"
                 document.getElementById("error").style.display = "block"
                 document.getElementById("submitFinal").disabled = false
                 document.getElementById("submitFinal").innerHTML = "Submit"
@@ -251,16 +261,25 @@ function scanData(){
             database_psw: document.getElementById("database_psw").value
         }
         
+        document.getElementById("submitFinal").disabled = true
+        document.getElementById("submitFinal").innerHTML = "Scanning ..."
+
         $.ajax({
             url: "/check_columns/",
             type: "POST",
             data: {json_data: JSON.stringify(data)},
             success: function(data, textStatus, jqXHR) {
                 console.log(data)
+                document.getElementById("submitFinal").disabled = false
+                document.getElementById("submitFinal").innerHTML = "Scan Data"
                 if(data["status"] == "error"){
                     document.getElementById("error_msg").innerHTML = data["errors"]
                     document.getElementById("error").style.display = "block"
                 }   
+                else if(data["status"] == "404"){
+                    document.getElementById("error_msg").innerHTML = "Could not connect to Database"
+                    document.getElementById("error").style.display = "block"
+                }
                 else if(data["status"] == "finished"){
                     if(data["errors"] == "[]"){
                         document.getElementById("finished_msg").innerHTML = "The scan has finished with no errors. Please submit your data";
@@ -274,6 +293,9 @@ function scanData(){
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                document.getElementById("submitFinal").disabled = false
+                document.getElementById("submitFinal").innerHTML = "Scan Data"
+                document.getElementById("error_msg").innerHTML = "Something went wrong and the scan could not complete"
                 document.getElementById("error").style.display = "block"
             }
         })

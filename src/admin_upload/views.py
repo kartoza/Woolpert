@@ -40,10 +40,18 @@ def admin_form(request):
         dbUsername = json_data["database_user"]
         dbPassword = json_data["database_psw"]
         dbName     = json_data["database_name"]
+        port     = json_data["database_port"]
 
-        conn = psycopg2.connect(
-                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port="5432", sslmode='require'
+        try:
+            conn = psycopg2.connect(
+                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port=port, sslmode='require'
                 )
+        except:
+            context = {
+            "status": "404",
+            "errors": "Could not connect to Database"
+            }
+            return JsonResponse(context, status=200)
 
         x_index = [i for i, x in enumerate(json_data["columns"]) if x == 'x_dd']
         y_index = [i for i, x in enumerate(json_data["columns"]) if x == 'y_dd']
@@ -96,10 +104,6 @@ def admin_form(request):
                values_str = values_str + f"'{data}',"
             values_str = values_str[:-1]
             
-            # if is_geom and not is_geom_uploaded:
-            #     values_str = values_str + f"ST_SetSRID(ST_MakePoint({row[x_index[0]]}, {row[y_index[0]]}), 4326)"
-            # else:
-            #     values_str = values_str[:-1]
 
             insert = conn.cursor()
             try:
@@ -115,7 +119,7 @@ def admin_form(request):
                 error_list.append(str({f"row {increment_id}": e}))
             conn.commit()
             increment_id = increment_id + 1
-        print(error_list)
+        
         context = {
             "status": "finished",
             "errors": json.dumps(error_list)
@@ -136,17 +140,22 @@ def check_columns(request):
         dbUsername = json_data["database_user"]
         dbPassword = json_data["database_psw"]
         dbName     = json_data["database_name"]
+        port     = json_data["database_port"]
 
-        conn = psycopg2.connect(
-                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port="5432", sslmode='require'
+        try:
+            conn = psycopg2.connect(
+                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port=port, sslmode='require'
                 )
+        except:
+            context = {
+            "status": "404",
+            "errors": "Could not connect to Database"
+            }
+            return JsonResponse(context, status=200)
 
         #get list of typenames for oid 
         cursor = conn.cursor()
-        # cursor.execute("select oid,typname from pg_type;")
-        # list_type = cursor.fetchall()
 
-        #retrieve columns for database
         cursor.execute(f"SELECT * FROM {json_data['layer']}")
         columns = cursor.description
         
