@@ -51,6 +51,8 @@ def admin_form(request):
         error_list = []
 
         cursor = conn.cursor()
+        # cursor.execute(f"SELECT max(fid) as max_id FROM {json_data['layer']}")
+        # max_id = cursor.fetchall()
 
         cursor.execute(f"SELECT * FROM {json_data['layer']}")
         data = cursor.fetchall()
@@ -83,14 +85,21 @@ def admin_form(request):
         increment_id = 1
         for row in json_data["rows"]:
             values_str = ""
+            # values_str = f"{id},"
             for data in row:
                try:
                    if "'" in data:
                        data = data.replace("'", "''")
+                       print(data)
                except:
                    pass
                values_str = values_str + f"'{data}',"
             values_str = values_str[:-1]
+            
+            # if is_geom and not is_geom_uploaded:
+            #     values_str = values_str + f"ST_SetSRID(ST_MakePoint({row[x_index[0]]}, {row[y_index[0]]}), 4326)"
+            # else:
+            #     values_str = values_str[:-1]
 
             insert = conn.cursor()
             try:
@@ -132,7 +141,10 @@ def check_columns(request):
                     database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port="5432", sslmode='require'
                 )
 
+        #get list of typenames for oid 
         cursor = conn.cursor()
+        # cursor.execute("select oid,typname from pg_type;")
+        # list_type = cursor.fetchall()
 
         #retrieve columns for database
         cursor.execute(f"SELECT * FROM {json_data['layer']}")
