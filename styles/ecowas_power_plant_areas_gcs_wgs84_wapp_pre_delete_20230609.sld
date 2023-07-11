@@ -7,14 +7,17 @@
       <se:FeatureTypeStyle>
         <se:Rule>
           <se:Name>Single symbol</se:Name>
-          <se:LineSymbolizer>
+          <se:PolygonSymbolizer>
+            <se:Fill>
+              <se:SvgParameter name="fill">#000000</se:SvgParameter>
+              <se:SvgParameter name="fill-opacity">0</se:SvgParameter>
+            </se:Fill>
             <se:Stroke>
-              <se:SvgParameter name="stroke">#0000f2</se:SvgParameter>
-              <se:SvgParameter name="stroke-width">1</se:SvgParameter>
+              <se:SvgParameter name="stroke">#232323</se:SvgParameter>
+              <se:SvgParameter name="stroke-width">2</se:SvgParameter>
               <se:SvgParameter name="stroke-linejoin">bevel</se:SvgParameter>
-              <se:SvgParameter name="stroke-linecap">square</se:SvgParameter>
             </se:Stroke>
-          </se:LineSymbolizer>
+          </se:PolygonSymbolizer>
         </se:Rule>
       </se:FeatureTypeStyle>
     </UserStyle>
