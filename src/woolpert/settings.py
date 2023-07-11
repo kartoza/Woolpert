@@ -39,6 +39,10 @@ except ImportError:
 # General Django development settings
 #
 PROJECT_NAME = 'woolpert'
+DATABASE_HOST = os.getenv('DATABASE_HOST')
+GEONODE_GEODATABASE = os.getenv('GEONODE_GEODATABASE')
+GEONODE_GEODATABASE_USER = os.getenv('GEONODE_GEODATABASE_USER')
+GEONODE_GEODATABASE_PASSWORD = os.getenv('GEONODE_GEODATABASE_PASSWORD')
 
 # add trailing slash to site url. geoserver url will be relative to this
 if not SITEURL.endswith('/'):
@@ -58,13 +62,13 @@ LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
 
 _DEFAULT_LANGUAGES = """(
     ('en-US', 'English'),
-    ('fr', 'Français'),
+    ('fr-FR', 'Français'),
 )"""
 
 LANGUAGES = ast.literal_eval(os.getenv("LANGUAGES", _DEFAULT_LANGUAGES))
 
 if PROJECT_NAME not in INSTALLED_APPS:
-    INSTALLED_APPS += (PROJECT_NAME,)
+    INSTALLED_APPS += (PROJECT_NAME, "admin_upload",)
 
 # Location of url mappings
 ROOT_URLCONF = os.getenv('ROOT_URLCONF', '{}.urls'.format(PROJECT_NAME))
