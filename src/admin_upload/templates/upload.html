@@ -16,7 +16,7 @@
     </div>
     <div class="form-group">
         <label>Port </label>
-        <input type="text" id="database_psw" name="database_port" class="form-control" required/>
+        <input type="text" id="database_port" name="database_port" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Username </label>
@@ -122,7 +122,8 @@ function databaseConn(){
     var database_name = document.getElementById("database_name").value;
     var database_user = document.getElementById("database_user").value;
     var database_psw = document.getElementById("database_psw").value;
-    if(database_host == "" || database_name == "" || database_user == "" || database_psw == ""){
+    var database_port = document.getElementById("database_port").value;
+    if(database_host == "" || database_name == "" || database_user == "" || database_psw == "" || database_port == ""){
         return false
     }
     else{
@@ -171,7 +172,8 @@ function submitData(){
             database_host: document.getElementById("database_host").value,
             database_name: document.getElementById("database_name").value,
             database_user: document.getElementById("database_user").value,
-            database_psw: document.getElementById("database_psw").value
+            database_psw: document.getElementById("database_psw").value,
+            database_port: document.getElementById("database_port").value
         }
         document.getElementById("submitFinal").disabled = true
         document.getElementById("submitFinal").innerHTML = "Uploading ..."
@@ -258,11 +260,12 @@ function scanData(){
             database_host: document.getElementById("database_host").value,
             database_name: document.getElementById("database_name").value,
             database_user: document.getElementById("database_user").value,
-            database_psw: document.getElementById("database_psw").value
+            database_psw: document.getElementById("database_psw").value,
+            database_port: document.getElementById("database_port").value
         }
         
-        document.getElementById("submitFinal").disabled = true
-        document.getElementById("submitFinal").innerHTML = "Scanning ..."
+        document.getElementById("scan").disabled = true
+        document.getElementById("scan").innerHTML = "Scanning ..."
 
         $.ajax({
             url: "/check_columns/",
@@ -270,8 +273,8 @@ function scanData(){
             data: {json_data: JSON.stringify(data)},
             success: function(data, textStatus, jqXHR) {
                 console.log(data)
-                document.getElementById("submitFinal").disabled = false
-                document.getElementById("submitFinal").innerHTML = "Scan Data"
+                document.getElementById("scan").disabled = false
+                document.getElementById("scan").innerHTML = "Scan Data"
                 if(data["status"] == "error"){
                     document.getElementById("error_msg").innerHTML = data["errors"]
                     document.getElementById("error").style.display = "block"
@@ -293,8 +296,8 @@ function scanData(){
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                document.getElementById("submitFinal").disabled = false
-                document.getElementById("submitFinal").innerHTML = "Scan Data"
+                document.getElementById("scan").disabled = false
+                document.getElementById("scan").innerHTML = "Scan Data"
                 document.getElementById("error_msg").innerHTML = "Something went wrong and the scan could not complete"
                 document.getElementById("error").style.display = "block"
             }
@@ -312,6 +315,7 @@ excel_file.addEventListener('change', (event) => {
 
     document.getElementById('wrong_format').style.display = "none";
     document.getElementById('zip_error').style.display = "none";
+    document.getElementById("error").style.display = "none"
 
     if(!['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/zip'].includes(event.target.files[0].type))
     {
@@ -431,7 +435,7 @@ excel_file.addEventListener('change', (event) => {
             });
         }
         catch{
-            alert("wrong")
+            console.log("error")
         }
 
         excel_file.value = '';

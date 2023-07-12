@@ -158,6 +158,20 @@ def check_columns(request):
 
         cursor.execute(f"SELECT * FROM {json_data['layer']}")
         columns = cursor.description
+
+        extra_len = 1
+        if (any('location' in i for i in columns)):
+            if "location" not in json_data['columns']:
+                extra_len = extra_len + 1
+        
+        column_len = len(json_data['columns']) + extra_len
+
+        if len(cursor.description) != column_len:
+            context = {
+                "status": "error",
+                "errors": "The number of columns in the file do not match the number of columns in the database"
+            }
+            return JsonResponse(context, status=200)
         
         for col in columns:
             col_index = [i for i, x in enumerate(json_data["columns"]) if x == col[0]]
@@ -178,6 +192,5 @@ def check_columns(request):
         #get type of columns in database
     context = {
             "status": "empty request",
-            "errors": json.dumps(error_list)
         }
     return JsonResponse(context, status=200)
