@@ -197,6 +197,10 @@ function upload_file(){
                 document.getElementById("error").style.display = "block"
             }
         },
+        error: function(jqXHR, textStatus, errorThrown) {
+            document.getElementById("error_msg").innerHTML = "Something went wrong and the file could not be submitted"
+            document.getElementById("error").style.display = "block"
+        }
     });
 }
 
