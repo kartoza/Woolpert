@@ -82,4 +82,10 @@ This can be added to the installation as `local_settings.py`
    GEOIP_PATH=/data/GeoIPCities.dat
    DEFAULT_MAX_UPLOAD_SIZE=200000
    ```
-4) 
+
+# Creating button for admin upload
+1) Log into djago administration
+2) Click on "Menu Items"
+3) Click on the "Add menu button"
+4) Set the title to "Upload" (nb: the app looks for the Upload tag)
+5) Set the url to "/admin_upload/"
