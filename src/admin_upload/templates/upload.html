@@ -187,8 +187,13 @@ function upload_file(){
                     globalSearch:false
                 });	
             }
-            else{
+            else if(data["status"] == "finished"){
                 document.getElementById("error_msg").innerHTML = "The esri file is missing some parts"
+                document.getElementById("error").style.display = "block"
+            }
+            else{
+                console.log(data)
+                document.getElementById("error_msg").innerHTML = "The file could not be uploaded"
                 document.getElementById("error").style.display = "block"
             }
         },
