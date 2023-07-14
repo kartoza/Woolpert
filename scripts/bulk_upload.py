@@ -15,7 +15,8 @@ from qgis.core import QgsProcessingParameterBoolean
 import processing
 
 
-def init_sql(master_layer, upload_layer):
+
+def init_sql( master_layer, upload_layer):
     # Convert field names to lowercase
     for field in upload_layer.fields():
         name = field.name()
@@ -31,12 +32,19 @@ def init_sql(master_layer, upload_layer):
     master_layer_fields = [field.name() for field in master_layer.fields()]
     upload_layer_fields = {field.name(): field for field in upload_layer.fields()}
 
+    master_layer_source = master_layer.source().split(" ")
+    for detail in master_layer_source:
+        if detail.startswith('key'):
+            layer_pk = detail.replace("key=",'')
+
     # Get the intersection of the field names
     common_fields = list(set(master_layer_fields).intersection(upload_layer_fields))
+    if layer_pk in common_fields:
+        common_fields.remove(layer_pk)
 
     # Generate the INSERT INTO SQL statement
-    sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields)}) VALUES "
-    skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields)}) VALUES "
+    sql_statement = f"INSERT INTO {layer_foo.name()} ({', '.join(common_fields + ['geometry'])}) VALUES "
+    skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields + ['geometry'])}) VALUES "
 
     # Iterate over features in foo1 layer
     for feature in upload_layer.getFeatures():
@@ -45,16 +53,22 @@ def init_sql(master_layer, upload_layer):
         for field in common_fields:
             value = feature[field.lower()]
             if isinstance(value, str):
-                if field in upload_layer_fields and upload_layer_fields[field].type() in [QVariant.Double,
-                                                                                          QVariant.Int]:
+                if field in upload_layer_fields and upload_layer_fields[field].type() in [QVariant.Double, QVariant.Int]:
                     skip_row = True
                     break
                 if value.find("'") != -1:
-                    value = f"'''{value}'''"
+                    formated_value = value.replace("'", "''")
+                    value = f"'{formated_value}'"
                 else:
                     value = f"'{value}'"
+            elif isinstance(value, QDate):
+                date_value = value.toPyDate()
+                value = f"'{date_value}'"
+
             attribute_values.append(str(value))
         if not skip_row and len(attribute_values) == len(common_fields):
+            geometry = feature.geometry().asWkt()
+            attribute_values.append(f"ST_GeomFromText('{geometry}')")
             value_string = "(" + ", ".join(attribute_values) + ")"
             sql_statement += value_string + ", "
         elif skip_row and len(attribute_values) == len(common_fields):
@@ -79,15 +93,12 @@ def init_sql(master_layer, upload_layer):
     return sql_statement, skipped_rows_sql
 
 
+
 class Model(QgsProcessingAlgorithm):
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterVectorLayer('master_vector_layer', 'Master Vector Layer',
-                                                            types=[QgsProcessing.TypeVectorAnyGeometry],
-                                                            defaultValue=None))
-        self.addParameter(QgsProcessingParameterVectorLayer('input_vector_layer', 'Input Vector Layer',
-                                                            types=[QgsProcessing.TypeVectorAnyGeometry],
-                                                            defaultValue=None))
+        self.addParameter(QgsProcessingParameterVectorLayer('master_vector_layer', 'Master Vector Layer', types=[QgsProcessing.TypeVectorAnyGeometry], defaultValue=None))
+        self.addParameter(QgsProcessingParameterVectorLayer('input_vector_layer', 'Input Vector Layer', types=[QgsProcessing.TypeVectorAnyGeometry], defaultValue=None))
         self.addParameter(
             QgsProcessingParameterProviderConnection('Connection', 'Database Connection', 'postgres',
                                                      defaultValue=None))
@@ -106,15 +117,14 @@ class Model(QgsProcessingAlgorithm):
 
         master_layer_pg = self.parameterAsLayer(parameters, 'master_vector_layer', context)
         upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
-        print(init_sql(master_layer_pg, upload_layer_qgis)[0])
+        print(init_sql( master_layer_pg, upload_layer_qgis)[0])
 
         # PostgreSQL execute SQL
         alg_params = {
             'DATABASE': parameters['Connection'],
-            'SQL': '%s' % init_sql(master_layer_pg, upload_layer_qgis)[0]
+            'SQL': '%s' % init_sql( master_layer_pg, upload_layer_qgis)[0]
         }
-        outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
-                                                         feedback=feedback, is_child_algorithm=True)
+        outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context, feedback=feedback, is_child_algorithm=True)
         return results
 
     def tr(self, string):
