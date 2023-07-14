@@ -8,11 +8,11 @@
     {% csrf_token %}
     <div class="form-group">
         <label>Database host </label>
-        <input type="text" id="database_host"  name="database_host" class="form-control" required/>
+        <input type="text" id="database_host" name="database_host" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Database name </label>
-        <input type="text" id="database_name"  name="database_name" class="form-control" required/>
+        <input type="text" id="database_name" name="database_name" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Port </label>
@@ -20,11 +20,11 @@
     </div>
     <div class="form-group">
         <label>Username </label>
-        <input type="text" id="database_user"  name="database_user" class="form-control" required/>
+        <input type="text" id="database_user" name="database_user" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Password </label>
-        <input type="password" id="database_psw"  name="database_psw" class="form-control" required/>
+        <input type="password" id="database_psw" name="database_psw" class="form-control" required/>
     </div>
     
     <div class="form-group">
@@ -137,6 +137,9 @@ function databaseConn(){
 function upload_file(){
     var form_data = new FormData();
     form_data.append('file', $('#excel_file')[0].files[0]);
+    dataArr = []
+    document.getElementById("upload_btn").disabled = true
+    document.getElementById("upload_btn").innerHTML = "Uploading ..."
     $.ajax({
         type: 'POST',
         url: '/read_shapefile/',
@@ -146,6 +149,8 @@ function upload_file(){
         enctype: 'multipart/form-data',
         processData: false,
         success: function(data) {
+            document.getElementById("upload_btn").disabled = false
+            document.getElementById("upload_btn").innerHTML = "Upload"
             if(data["status"] == "finished"){
                 document.getElementById("scan").style.display = "block"
                 document.getElementById("upload_btn").style.display = "none"
@@ -187,20 +192,13 @@ function upload_file(){
                     globalSearch:false
                 });	
             }
-            else if(data["status"] == "finished"){
+            else{
+                document.getElementById("upload_btn").disabled = false
+                document.getElementById("upload_btn").innerHTML = "Upload"
                 document.getElementById("error_msg").innerHTML = "The esri file is missing some parts"
                 document.getElementById("error").style.display = "block"
             }
-            else{
-                console.log(data)
-                document.getElementById("error_msg").innerHTML = "The file could not be uploaded"
-                document.getElementById("error").style.display = "block"
-            }
         },
-        error: function(jqXHR, textStatus, errorThrown) {
-            document.getElementById("error_msg").innerHTML = "Something went wrong and the file could not be submitted"
-            document.getElementById("error").style.display = "block"
-        }
     });
 }
 
@@ -225,9 +223,13 @@ function submitData(){
 
         dataHeaders = dataArr[0]
 
+        console.log(dataHeaders)
+
         for(i = 0; i < checkedVals.length; i++){
             dataSave.push(dataArr[checkedVals[i]])
         }
+
+        console.log(dataSave)
 
         let selectedLayer = $("#selectLayer :selected").val();
 
@@ -306,9 +308,13 @@ function scanData(){
 
         dataHeaders = dataArr[0]
 
+        console.log("headers", dataHeaders)
+
         for(i = 0; i < checkedVals.length; i++){
             dataSave.push(dataArr[checkedVals[i]])
         }
+
+        console.log("row", dataSave)
 
         let selectedLayer = $("#selectLayer :selected").val();
 
@@ -326,6 +332,9 @@ function scanData(){
         document.getElementById("scan").disabled = true
         document.getElementById("scan").innerHTML = "Scanning ..."
 
+        document.getElementById("error_msg").innerHTML = "" 
+        document.getElementById("error").style.display = "none"
+
         $.ajax({
             url: "/check_columns/",
             type: "POST",
@@ -335,7 +344,19 @@ function scanData(){
                 document.getElementById("scan").disabled = false
                 document.getElementById("scan").innerHTML = "Scan Data"
                 if(data["status"] == "error"){
-                    document.getElementById("error_msg").innerHTML = data["errors"]
+                    const columns_not_in_db = JSON.parse(data["columns_not_in_db"])
+                    const columns_mssing_in_db = JSON.parse(data["columns_mssing_in_db"])
+                    console.log(columns_not_in_db.length)
+                    console.log(columns_mssing_in_db.length)
+                    var not_in_db_msg = ""
+                    var missing_in_db = ""
+                    if(columns_not_in_db.length > 0){
+                        not_in_db_msg = "The following columns are not present in database: " + columns_not_in_db
+                    }
+                    if(columns_mssing_in_db.length > 0){
+                        missing_in_db = "The following columns are missing from the file: " + columns_mssing_in_db
+                    }
+                    document.getElementById("error_msg").innerHTML = "<p style='word-break: break-all;'>"+ not_in_db_msg +"</p><br><p style='word-break: break-all;'>"+ missing_in_db +"</p>" 
                     document.getElementById("error").style.display = "block"
                 }   
                 else if(data["status"] == "404"){
@@ -446,6 +467,36 @@ excel_file.addEventListener('change', (event) => {
     }
     
 });
+
+function download_table_as_csv(table_id, separator = ',') {
+    // Select rows from table_id
+    var rows = document.querySelectorAll('table#' + table_id + ' tr');
+    // Construct csv
+    var csv = [];
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll('td, th');
+        for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' ')
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+    }
+    var csv_string = csv.join('\n');
+    // Download it
+    var filename = 'export_' + table_id + '_' + new Date().toLocaleDateString() + '.csv';
+    var link = document.createElement('a');
+    link.style.display = 'none';
+    link.setAttribute('target', '_blank');
+    link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 </script>
 
 {% endblock %}
