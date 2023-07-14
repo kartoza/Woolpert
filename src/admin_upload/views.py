@@ -85,7 +85,7 @@ def admin_form(request):
             json_data["columns"].pop(primary_index[0])
             for row in json_data["rows"]:
                 row.pop(primary_index[0])
-        
+                
         columns_str = ""
         for col in json_data['columns']:
             columns_str = columns_str + f"{col},"
@@ -151,6 +151,10 @@ def read_shapefile(request):
                 file_ext = os.path.splitext(_file.path)
                 if file_ext[1] == ".shp":
                     shape_file_dir = _file.path
+        else:
+            file_ext = os.path.splitext(dir.path)
+            if file_ext[1] == ".shp":
+                shape_file_dir = dir.path
     
     driver = ogr.GetDriverByName('ESRI Shapefile')
     try:
