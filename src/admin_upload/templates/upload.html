@@ -39,6 +39,8 @@
         <label>Upload file (only xls, xlsx and zip containing esri files are allowed. For excel only the first worksheet is processed)</label>
         <input type="file" class="form-control" id="excel_file"/>
         <br>
+        <p id="show_file_name"></p>
+        <br>
         <button id="showData" name="file" type="button" class="btn btn-secondary" style="width: 100%; display: none;" onclick="show()">Edit Data</button>
     </div>
 
@@ -405,6 +407,7 @@ excel_file.addEventListener('change', (event) => {
     document.getElementById("error").style.display = "none"
     document.getElementById('excel_data').innerHTML = "";
     document.getElementById("submitFinal").disabled = true
+    document.getElementById("show_file_name").innerHTML = ""
 
     if(!['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel', 'application/zip'].includes(event.target.files[0].type))
     {
@@ -462,12 +465,15 @@ excel_file.addEventListener('change', (event) => {
                 });	
             }
         }
-        // excel_file.value = '';
+        document.getElementById("show_file_name").innerHTML = "File uploaded: " + event.target.files[0].name
+        excel_file.value = '';
     } 
     else if(['application/zip'].includes(event.target.files[0].type)){
+        document.getElementById("show_file_name").innerHTML = "File uploaded: " + event.target.files[0].name
         filetype = "zip";
         document.getElementById("scan").style.display = "none"
         document.getElementById("upload_btn").style.display = "block"
+        excel_file.value = '';
     }
     
 });
