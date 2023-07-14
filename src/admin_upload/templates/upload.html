@@ -8,29 +8,28 @@
     {% csrf_token %}
     <div class="form-group">
         <label>Database host </label>
-        <input type="text" id="database_host" value="localhost" name="database_host" class="form-control" required/>
+        <input type="text" id="database_host"  name="database_host" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Database name </label>
-        <input type="text" id="database_name" value="woolpert_dev-imports" name="database_name" class="form-control" required/>
+        <input type="text" id="database_name"  name="database_name" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Port </label>
-        <input type="text" id="database_port" value="5432" name="database_port" class="form-control" required/>
+        <input type="text" id="database_port"  name="database_port" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Username </label>
-        <input type="text" id="database_user" value="woolpert_dev" name="database_user" class="form-control" required/>
+        <input type="text" id="database_user"  name="database_user" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Password </label>
-        <input type="password" id="database_psw" value="woolpert_dev" name="database_psw" class="form-control" required/>
+        <input type="password" id="database_psw"  name="database_psw" class="form-control" required/>
     </div>
     
     <div class="form-group">
         <label>Select a layer</label>
         <select class="form-control" name="layer" id="selectLayer" required>
-            <option value="substation">substation</option>
             {% for layer in layers %}
                 <option value="{{layer.name}}">{{ layer }}</option>
             {% endfor %}
