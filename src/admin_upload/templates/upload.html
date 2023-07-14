@@ -16,7 +16,7 @@
     </div>
     <div class="form-group">
         <label>Port </label>
-        <input type="text" id="database_port"  name="database_port" class="form-control" required/>
+        <input type="text" id="database_port" name="database_port" class="form-control" required/>
     </div>
     <div class="form-group">
         <label>Username </label>
@@ -195,7 +195,7 @@ function upload_file(){
             else{
                 document.getElementById("upload_btn").disabled = false
                 document.getElementById("upload_btn").innerHTML = "Upload"
-                document.getElementById("error_msg").innerHTML = "The esri file is missing some parts"
+                document.getElementById("error_msg").innerHTML = "Error reading shp file:" + data["errors"]
                 document.getElementById("error").style.display = "block"
             }
         },
@@ -360,7 +360,11 @@ function scanData(){
                     document.getElementById("error").style.display = "block"
                 }   
                 else if(data["status"] == "404"){
-                    document.getElementById("error_msg").innerHTML = "Could not connect to Database"
+                    document.getElementById("error_msg").innerHTML = data["errors"]
+                    document.getElementById("error").style.display = "block"
+                }
+                else if(data["status"] == "502"){
+                    document.getElementById("error_msg").innerHTML = "Could not connect to the database"
                     document.getElementById("error").style.display = "block"
                 }
                 else if(data["status"] == "finished"){
