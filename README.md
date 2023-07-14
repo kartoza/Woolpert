@@ -37,6 +37,17 @@ load the data into a PostgreSQL database.
 ![management_command](images/management_command_job.png)
 7) Run the job and then inspect the layers in GeoNode.
 
+# Uploading Data using QGIS
+
+1) Download the script `bulk_upload.py` in teh scripts folder.
+2) Navigate to QGIS and choose the processing model > scripts.
+3) Choose create script option.
+4) In the editor that shows up, choose open script and save the script.
+5) Choose the script and run following the options defined in the help menu.
+![upload](images/upload_script.png)
+6) Run the script and observer the results in the database.
+
+
 # Creating button for admin upload
 1) Log into django administration
 2) Click on "Menu Items"
