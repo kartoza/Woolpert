@@ -80,27 +80,13 @@ def admin_form(request):
         data_f = get_primary.fetchall()
         primary_key = data_f[0][0]
 
-        extra_len = 0
-
-        if primary_key not in json_data["columns"]:
-            extra_len = extra_len + 1
-
-        if (any('location' in i for i in cursor.description)):
-            is_geom = True
-            if "location" in json_data['columns']:
-                is_geom_uploaded = True
-            else:
-                # if uploaded file was not shape file
-                extra_len = extra_len + 1
-        
-        column_len = len(json_data['columns']) + extra_len
-
-        if len(cursor.description) != column_len:
-            context = {
-                "status": "error",
-                "errors": "The number of columns in the file do not match the number of columns in the database"
-            }
-            return JsonResponse(context, status=200)
+        if primary_key in json_data["columns"]:
+            primary_index = [i for i, x in enumerate(json_data["columns"]) if x == primary_key]
+            json_data["columns"].pop(primary_index[0])
+            for row in json_data["rows"]:
+                row.pop(primary_index[0])
+            print(json_data["columns"])
+            print(json_data["rows"])
         
         columns_str = ""
         for col in json_data['columns']:
@@ -121,7 +107,6 @@ def admin_form(request):
                values_str = values_str + f"'{data}',"
             values_str = values_str[:-1]
             
-
             insert = conn.cursor()
             try:
                 insert.execute(f"INSERT INTO {json_data['layer']} ({columns_str}) VALUES ({values_str}) ON CONFLICT DO NOTHING")
@@ -133,6 +118,7 @@ def admin_form(request):
                     update.execute(f"UPDATE {json_data['layer']} SET location = ST_SetSRID(ST_MakePoint({row[x_index[0]]}, {row[y_index[0]]}), 4326) WHERE fid = '{lastid}' ")
                     
             except Exception as e:
+                conn.commit()
                 error_list.append(str({f"row {increment_id}": e}))
             conn.commit()
             increment_id = increment_id + 1
@@ -169,16 +155,21 @@ def read_shapefile(request):
                     file_ext = os.path.splitext(_file.path)
                     if file_ext[1] == ".shp":
                         shape_file_dir = _file.path
+            else:
+                file_ext = os.path.splitext(dir.path)
+                if file_ext[1] == ".shp":
+                    shape_file_dir = dir.path
         
         driver = ogr.GetDriverByName('ESRI Shapefile')
         try:
             dataSource = ogr.Open(shape_file_dir, 0)
             daLayer = dataSource.GetLayer(0)
-        except:
+        except Exception as e:
             # os.remove(zip_file_del)
             # shutil.rmtree(folder_del)
             context = {
             "status": "error",
+            "errors": json.dumps(str(e)),
             }
             return JsonResponse(context, status=200)
 
@@ -188,15 +179,18 @@ def read_shapefile(request):
         column_headers = []
         row_data = []
 
+        is_location = False
         for i in range(layerDefinition.GetFieldCount()):
             fieldName =  layerDefinition.GetFieldDefn(i).GetName()
             fieldTypeCode = layerDefinition.GetFieldDefn(i).GetType()
             fieldType = layerDefinition.GetFieldDefn(i).GetFieldTypeName(fieldTypeCode)
             fieldWidth = layerDefinition.GetFieldDefn(i).GetWidth()
             GetPrecision = layerDefinition.GetFieldDefn(i).GetPrecision()
-
+            if fieldName == "location":
+                is_location = True
             column_headers.append(fieldName)
-        column_headers.append("location")
+        if not is_location:
+            column_headers.append("location")
 
         for feature in layer:
             geom = feature.GetGeometryRef()
@@ -204,8 +198,9 @@ def read_shapefile(request):
             feature_list = []
             for column in column_headers:
                 try:
-                    if column == "location":
-                        feature_list.append(location)
+                    if not is_location:
+                        if column == "location":
+                            feature_list.append(location)
                     feature_list.append(feature.GetField(column))
                 except:
                     pass
@@ -221,108 +216,141 @@ def read_shapefile(request):
         return JsonResponse(context, status=200)
     except Exception as e:
         context = {
-            "status": "502",
-            "exception": json.dumps(e)
+            "status": "error",
+            "errors": json.dumps(str(e)),
         }
         return JsonResponse(context, status=200)
-
+    
 def check_columns(request):
     if request.POST:
-        json_data = json.loads(request.POST.get('json_data'))
-        error_list = []
-
-        dbHost     = json_data["database_host"]
-        dbUsername = json_data["database_user"]
-        dbPassword = json_data["database_psw"]
-        dbName     = json_data["database_name"]
-        port       = json_data["database_port"]
-
         try:
-            conn = psycopg2.connect(
-                    database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port=port, sslmode='require'
-                )
-        except:
-            context = {
-            "status": "404",
-            "errors": "Could not connect to Database"
-            }
-            return JsonResponse(context, status=200)
+            json_data = json.loads(request.POST.get('json_data'))
+            error_list = []
+
+            dbHost     = json_data["database_host"]
+            dbUsername = json_data["database_user"]
+            dbPassword = json_data["database_psw"]
+            dbName     = json_data["database_name"]
+            port       = json_data["database_port"]
+
+            try:
+                conn = psycopg2.connect(
+                        database=dbName, user=dbUsername, password=dbPassword, host=dbHost, port=port, sslmode='require'
+                    )
+            except:
+                context = {
+                "status": "502",
+                "errors": "Could not connect to Database"
+                }
+                return JsonResponse(context, status=200)
+                
+            #get list of typenames for oid 
+            cursor = conn.cursor()
+            columns = ""
+            try:
+                cursor.execute(f"SELECT * FROM {json_data['layer']}")
+                columns = cursor.description
+            except Exception as e:
+                context = {
+                    "status": "404",
+                    "errors": f"{e}"
+                }
+                return JsonResponse(context, status=200)
             
+            get_primary = conn.cursor()
+            get_primary.execute(f"""
+                SELECT               
+                pg_attribute.attname, 
+                format_type(pg_attribute.atttypid, pg_attribute.atttypmod) 
+                FROM pg_index, pg_class, pg_attribute, pg_namespace 
+                WHERE 
+                pg_class.oid = '{json_data['layer']}'::regclass AND 
+                indrelid = pg_class.oid AND 
+                nspname = 'public' AND 
+                pg_class.relnamespace = pg_namespace.oid AND 
+                pg_attribute.attrelid = pg_class.oid AND 
+                pg_attribute.attnum = any(pg_index.indkey)
+                AND indisprimary """)
+            data_f = get_primary.fetchall()
+            primary_key = data_f[0][0]
+            print(primary_key)
 
-        #get list of typenames for oid 
-        cursor = conn.cursor()
+            extra_len = 0
+            is_geom = False
+            is_geom_uploaded = False
+            if (any('location' in i for i in cursor.description)):
+                is_geom = True
+                if "location" in json_data['columns']:
+                    is_geom_uploaded = True
+                else:
+                    # if uploaded file was not shape file
+                    extra_len = extra_len + 1
 
-        try:
-            cursor.execute(f"SELECT * FROM {json_data['layer']}")
-            columns = cursor.description
-        except:
+            columns_not_in_db = []
+            is_primary_uploaded = False
+            if primary_key in json_data["columns"]:
+                is_primary_uploaded = True
+
+            print(columns)
+
+            for col in json_data["columns"]:
+                if not (any(col in i for i in columns)):
+                    columns_not_in_db.append(col)
+            
+            columns_mssing_in_db = []
+            for col in columns:
+                if col[0] == primary_key and not is_primary_uploaded:
+                    pass
+                elif is_geom and not is_geom_uploaded:
+
+                    pass
+                elif not (any(col[0] in i for i in json_data['columns'])):
+                    columns_mssing_in_db.append(col[0])
+            print(f"columns missing from database {columns_mssing_in_db}")
+
+            if columns_mssing_in_db or columns_not_in_db:
+                context = {
+                    "status": "error",
+                    "errors": "The number of columns in the file do not match the number of columns in the database",
+                    "columns_mssing_in_db": json.dumps(columns_mssing_in_db),
+                    "columns_not_in_db": json.dumps(columns_not_in_db)
+                }
+                return JsonResponse(context, status=200)
+            
+            col_type = []
+
+            for col in columns:
+                check_data = conn.cursor()
+                check_data.execute(f"SELECT pg_typeof({col[0]}) FROM {json_data['layer']} LIMIT 1")
+                data = check_data.fetchall()
+                col_type.append({"name": col[0], "type": data[0][0]})
+
+            for row in json_data["rows"]:
+                row_index = 0
+                for data in row:
+                    col_index = col_type.index(next(filter(lambda n: n.get("name") == json_data['columns'][row_index], col_type)))
+                    check_type = col_type[col_index]["type"]
+                    
+                    try:
+                        query = conn.cursor()
+                        query.execute(f"SELECT CAST('{data}' AS {check_type});")
+                        conn.commit()
+                    except psycopg2.Error as e:
+                        conn.commit()
+                        query.close()
+                        error_list.append(f"Data '{data}' in column '{json_data['columns'][row_index]}' is not in the correct format. The data type should be {check_type}")
+                    finally:
+                        row_index = row_index + 1
+                    
             context = {
-                "status": "error",
-                "errors": f"Could not find table {json_data['layer']}"
+                "status": "finished",
+                "errors": json.dumps(error_list)
             }
             return JsonResponse(context, status=200)
-        
-        get_primary = conn.cursor()
-        get_primary.execute(f"""
-            SELECT               
-            pg_attribute.attname, 
-            format_type(pg_attribute.atttypid, pg_attribute.atttypmod) 
-            FROM pg_index, pg_class, pg_attribute, pg_namespace 
-            WHERE 
-            pg_class.oid = '{json_data['layer']}'::regclass AND 
-            indrelid = pg_class.oid AND 
-            nspname = 'public' AND 
-            pg_class.relnamespace = pg_namespace.oid AND 
-            pg_attribute.attrelid = pg_class.oid AND 
-            pg_attribute.attnum = any(pg_index.indkey)
-            AND indisprimary """)
-        data_f = get_primary.fetchall()
-        primary_key = data_f[0][0]
-
-        extra_len = 0
-        if primary_key not in json_data["columns"]:
-                extra_len = extra_len + 1
-        if (any('location' in i for i in columns)):
-            if "location" not in json_data['columns']:
-                extra_len = extra_len + 1
-        
-        column_len = len(json_data['columns']) + extra_len
-
-        if len(cursor.description) != column_len:
+        except Exception as e:
             context = {
-                "status": "error",
-                "errors": "The number of columns in the file do not match the number of columns in the database"
-            }
-            return JsonResponse(context, status=200)
-        
-        col_type = []
-
-        for col in columns:
-            check_data = conn.cursor()
-            check_data.execute(f"SELECT pg_typeof({col[0]}) FROM {json_data['layer']} LIMIT 1")
-            data = check_data.fetchall()
-            col_type.append({"name": col[0], "type": data[0][0]})
-
-        for row in json_data["rows"]:
-            row_index = 0
-            for data in row:
-                col_index = col_type.index(next(filter(lambda n: n.get("name") == json_data['columns'][row_index], col_type)))
-                check_type = col_type[col_index]["type"]
-                
-                try:
-                    query = conn.cursor()
-                    query.execute(f"SELECT CAST('{data}' AS {check_type});")
-                    conn.commit()
-                except psycopg2.Error as e:
-                    conn.commit()
-                    query.close()
-                    error_list.append(f"Data '{data}' in column '{json_data['columns'][row_index]}' is not in the correct format. The data type should be {check_type}")
-                finally:
-                    row_index = row_index + 1
-                
-        context = {
-            "status": "finished",
-            "errors": json.dumps(error_list)
+            "status": "504",
+            "errors": json.dumps(str(e))
         }
         return JsonResponse(context, status=200)
 
