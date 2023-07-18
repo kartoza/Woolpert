@@ -37,5 +37,8 @@ urlpatterns = [
     url(r'^check_columns/',
         views.check_columns,
         name='check_columns'),
+    url(r'^read_shapefile/',
+        views.read_shapefile,
+        name='read_shapefile'),
  ] + urlpatterns
 
