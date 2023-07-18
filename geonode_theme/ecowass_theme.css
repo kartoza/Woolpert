@@ -52,5 +52,27 @@
 /* dropdown menu */
 .dropdown-menu {
    background-color: #F7F7F7 !important;
-   colour: #111522 !important;
+   color: #111522 !important;
+}
+
+/* info bar on map view */
+.gn-action-navbar-title {
+   background-color: #C9313D !important;
+   border-color: #C9313D !important;
+}
+
+/* opacity sliders */
+.noUi-target  {
+   background-color: #C9313D !important;
+}
+.noUi-tooltip {
+   background-color: #C9313D !important;
+}
+
+/* print menu */
+.modal-header {
+   background-color: #111522 !important;
+}
+.panel-body {
+   border-color: #111522 !important;
 }
