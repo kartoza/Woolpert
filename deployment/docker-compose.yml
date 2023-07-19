@@ -102,6 +102,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
+      - geoserver/config.yaml:/usr/local/tomcat/webapps/geoserver/data/printing/config.yaml
+      - geoserver/WAPP_logo.png:/usr/local/tomcat/webapps/geoserver/data/printing/WAPP_logo.png
       - geoserver-data-dir:/geoserver_data/data
       - backup-restore:/backup_restore
       - ../scripts:/geo_scripts
