@@ -47,7 +47,7 @@ RUN pip install pylibmc \
     && pip install sherlock
 
 # add bower and grunt command
-COPY src/geoserver-config /entrypoint/config
+COPY src/geoserver-config /geoserver-config
 COPY src /usr/src/woolpert/
 WORKDIR /usr/src/woolpert
 

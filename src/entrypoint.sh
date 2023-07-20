@@ -3,6 +3,19 @@
 # Exit script in case of error
 set -e
 
+# Copy print configs to geoserver data dir
+if [[ -f /geoserver-config/WAPP_logo.png ]];then
+  cp -r  /geoserver-config/WAPP_logo.png $GEOSERVER_DATA_DIR/printing/
+fi
+
+if [[ -f /geoserver-config/config.yaml ]];then
+  cp -r  /geoserver-config/config.yaml $GEOSERVER_DATA_DIR/printing/
+fi
+
+if [[ -f /geoserver-config/test.png ]];then
+  cp -r  /geoserver-config/test.png $GEOSERVER_DATA_DIR/printing/
+fi
+
 INVOKE_LOG_STDOUT=${INVOKE_LOG_STDOUT:-FALSE}
 invoke () {
     if [ $INVOKE_LOG_STDOUT = 'true' ] || [ $INVOKE_LOG_STDOUT = 'True' ]
