@@ -85,8 +85,6 @@ def admin_form(request):
             json_data["columns"].pop(primary_index[0])
             for row in json_data["rows"]:
                 row.pop(primary_index[0])
-            print(json_data["columns"])
-            print(json_data["rows"])
         
         columns_str = ""
         for col in json_data['columns']:
@@ -101,7 +99,6 @@ def admin_form(request):
                try:
                    if "'" in data:
                        data = data.replace("'", "''")
-                       print(data)
                except:
                    pass
                values_str = values_str + f"'{data}',"
@@ -246,16 +243,16 @@ def check_columns(request):
                 
             #get list of typenames for oid 
             cursor = conn.cursor()
-            columns = ""
             try:
                 cursor.execute(f"SELECT * FROM {json_data['layer']}")
-                columns = cursor.description
             except Exception as e:
                 context = {
                     "status": "404",
                     "errors": f"{e}"
                 }
                 return JsonResponse(context, status=200)
+            
+            columns = cursor.description
             
             get_primary = conn.cursor()
             get_primary.execute(f"""
@@ -273,7 +270,6 @@ def check_columns(request):
                 AND indisprimary """)
             data_f = get_primary.fetchall()
             primary_key = data_f[0][0]
-            print(primary_key)
 
             extra_len = 0
             is_geom = False
@@ -291,8 +287,6 @@ def check_columns(request):
             if primary_key in json_data["columns"]:
                 is_primary_uploaded = True
 
-            print(columns)
-
             for col in json_data["columns"]:
                 if not (any(col in i for i in columns)):
                     columns_not_in_db.append(col)
@@ -302,11 +296,9 @@ def check_columns(request):
                 if col[0] == primary_key and not is_primary_uploaded:
                     pass
                 elif is_geom and not is_geom_uploaded:
-
                     pass
                 elif not (any(col[0] in i for i in json_data['columns'])):
                     columns_mssing_in_db.append(col[0])
-            print(f"columns missing from database {columns_mssing_in_db}")
 
             if columns_mssing_in_db or columns_not_in_db:
                 context = {
@@ -321,9 +313,11 @@ def check_columns(request):
 
             for col in columns:
                 check_data = conn.cursor()
-                check_data.execute(f"SELECT pg_typeof({col[0]}) FROM {json_data['layer']} LIMIT 1")
+                # check_data.execute(f"SELECT pg_typeof({col[0]}) FROM {json_data['layer']} LIMIT 1")
+                check_data.execute(f"SELECT typname from pg_type WHERE oid = {col[1]}")
                 data = check_data.fetchall()
                 col_type.append({"name": col[0], "type": data[0][0]})
+
 
             for row in json_data["rows"]:
                 row_index = 0
