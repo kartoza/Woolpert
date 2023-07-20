@@ -13,7 +13,7 @@
     <Abstract>Generator points Styling</Abstract>
     <FeatureTypeStyle>
 	  <Rule>
-          <Name>Generator Points</Name>
+      <Name>Generator Points</Name>
           <PointSymbolizer>
             <Graphic>
               <Mark>

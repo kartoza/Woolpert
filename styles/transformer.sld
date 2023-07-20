@@ -13,7 +13,7 @@
     <Abstract>Transformer points Styling</Abstract>
     <FeatureTypeStyle>
 	  <Rule>
-          <Name>Transformer Points</Name>
+      <Name>Transformer Points</Name>
           <PointSymbolizer>
             <Graphic>
               <Mark>

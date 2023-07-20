@@ -44,7 +44,7 @@
      
      <Rule>
         <Name>ruleGT1</Name>
-        <Title>Clustered Generator Points</Title>
+        <Title>Clustered Capacitor Points</Title>
         <ogc:Filter>
           <ogc:PropertyIsGreaterThanOrEqualTo>
             <ogc:PropertyName>count</ogc:PropertyName>
@@ -57,7 +57,7 @@
             <Mark>
               <WellKnownName>circle</WellKnownName>
               <Fill>
-                <CssParameter name="fill">#b8ee70</CssParameter>
+                <CssParameter name="fill">#9a458c</CssParameter>
               </Fill>
             </Mark>
             <Size>15</Size>
@@ -70,7 +70,7 @@
           <Font>
             <CssParameter name="font-family">Arial</CssParameter>
             <CssParameter name="font-size">10</CssParameter>
-            <CssParameter name="font-weight">regular</CssParameter>
+            <CssParameter name="font-weight">bold</CssParameter>
           </Font>
           <LabelPlacement>
             <PointPlacement>
@@ -88,20 +88,20 @@
              </Fill>
           </Halo>
           <Fill>
-            <CssParameter name="fill">#000000</CssParameter>
+            <CssParameter name="fill">#FFFFFF</CssParameter>
             <CssParameter name="fill-opacity">1.0</CssParameter>
           </Fill>
         </TextSymbolizer>
       </Rule>
-	  <Rule>
-          <Name>Generator Points</Name>
-		  <MaxScaleDenominator>1000000</MaxScaleDenominator>
+	    <Rule>
+        <Name>Capacitor Points</Name>
+		    <MaxScaleDenominator>1000000</MaxScaleDenominator>
           <PointSymbolizer>
             <Graphic>
               <Mark>
                 <WellKnownName>circle</WellKnownName>
                 <Fill>
-                  <CssParameter name="fill">#b8ee70</CssParameter>
+                  <CssParameter name="fill">#9a458c</CssParameter>
                 </Fill>
                 <Stroke>
                   <CssParameter name="stroke">#232323</CssParameter>

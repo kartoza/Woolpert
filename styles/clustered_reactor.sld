@@ -44,7 +44,7 @@
      
      <Rule>
         <Name>ruleGT1</Name>
-        <Title>Clustered Capacitor Points</Title>
+        <Title>Clustered Reactor Points</Title>
         <ogc:Filter>
           <ogc:PropertyIsGreaterThanOrEqualTo>
             <ogc:PropertyName>count</ogc:PropertyName>
@@ -57,7 +57,7 @@
             <Mark>
               <WellKnownName>circle</WellKnownName>
               <Fill>
-                <CssParameter name="fill">#9a458c</CssParameter>
+                <CssParameter name="fill">#d447e6</CssParameter>
               </Fill>
             </Mark>
             <Size>15</Size>
@@ -94,14 +94,13 @@
         </TextSymbolizer>
       </Rule>
 	  <Rule>
-          <Name>Capacitor Points</Name>
-		  <MaxScaleDenominator>1000000</MaxScaleDenominator>
+      <Name>Reactor Points</Name>
           <PointSymbolizer>
             <Graphic>
               <Mark>
                 <WellKnownName>circle</WellKnownName>
                 <Fill>
-                  <CssParameter name="fill">#9a458c</CssParameter>
+                  <CssParameter name="fill">#d447e6</CssParameter>
                 </Fill>
                 <Stroke>
                   <CssParameter name="stroke">#232323</CssParameter>

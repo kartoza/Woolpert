@@ -44,7 +44,7 @@
      
      <Rule>
         <Name>ruleGT1</Name>
-        <Title>Clustered Transformer Points</Title>
+        <Title>Clustered Generator Points</Title>
         <ogc:Filter>
           <ogc:PropertyIsGreaterThanOrEqualTo>
             <ogc:PropertyName>count</ogc:PropertyName>
@@ -57,7 +57,7 @@
             <Mark>
               <WellKnownName>circle</WellKnownName>
               <Fill>
-                <CssParameter name="fill">#ff0000</CssParameter>
+                <CssParameter name="fill">#b8ee70</CssParameter>
               </Fill>
             </Mark>
             <Size>15</Size>
@@ -70,7 +70,7 @@
           <Font>
             <CssParameter name="font-family">Arial</CssParameter>
             <CssParameter name="font-size">10</CssParameter>
-            <CssParameter name="font-weight">bold</CssParameter>
+            <CssParameter name="font-weight">regular</CssParameter>
           </Font>
           <LabelPlacement>
             <PointPlacement>
@@ -83,48 +83,32 @@
           <Halo>
              <Radius>0</Radius>
              <Fill>
-               <CssParameter name="fill">#ff0000</CssParameter>
+               <CssParameter name="fill">#000000</CssParameter>
                <CssParameter name="fill-opacity">0.9</CssParameter>
              </Fill>
           </Halo>
           <Fill>
-            <CssParameter name="fill">#FFFFFF</CssParameter>
+            <CssParameter name="fill">#000000</CssParameter>
             <CssParameter name="fill-opacity">1.0</CssParameter>
           </Fill>
         </TextSymbolizer>
       </Rule>
 	  <Rule>
-          <Name>Transformer Points</Name>
+      <Name>Generator Points</Name>
 		  <MaxScaleDenominator>1000000</MaxScaleDenominator>
           <PointSymbolizer>
             <Graphic>
               <Mark>
-                <WellKnownName>cross2</WellKnownName>
+                <WellKnownName>circle</WellKnownName>
                 <Fill>
-                  <CssParameter name="fill">#ff0000</CssParameter>
+                  <CssParameter name="fill">#b8ee70</CssParameter>
                 </Fill>
                 <Stroke>
-                  <CssParameter name="stroke">#ff0000</CssParameter>
+                  <CssParameter name="stroke">#232323</CssParameter>
                   <CssParameter name="stroke-width">0.5</CssParameter>
                 </Stroke>
               </Mark>
               <Size>7</Size>
-            </Graphic>
-          </PointSymbolizer>
-        <PointSymbolizer>
-            <Graphic>
-              <Mark>
-                <WellKnownName>cross2</WellKnownName>
-                <Fill>
-                  <CssParameter name="fill">#ff0000</CssParameter>
-                </Fill>
-                <Stroke>
-                  <CssParameter name="stroke">#ff0000</CssParameter>
-                  <CssParameter name="stroke-width">0.5</CssParameter>
-                </Stroke>
-              </Mark>
-              <Size>7</Size>
-              <Rotation>45</Rotation>
             </Graphic>
           </PointSymbolizer>
         </Rule>

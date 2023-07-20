@@ -9,11 +9,11 @@
    <Name>Capacitor Points</Name>
    <UserStyle>
    <!-- Styles can have names, titles and abstracts -->
-    <Title>Capacitor points</Title>
+    <Title>Capacitor Points</Title>
     <Abstract>Capacitor Styling</Abstract>
     <FeatureTypeStyle>
-	  <Rule>
-          <Name>Capacitor Points</Name>
+	    <Rule>
+        <Name>Capacitor Points</Name>
           <PointSymbolizer>
             <Graphic>
               <Mark>
