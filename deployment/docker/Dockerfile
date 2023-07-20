@@ -2,7 +2,7 @@ FROM python:3.10.2-buster AS prod
 LABEL GeoNode development team
 
 RUN mkdir -p /usr/src/woolpert
-RUN mkdir -p /entrypoint
+
 
 # Enable postgresql-client-13
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
