@@ -21,8 +21,6 @@ x-common-django:
   depends_on:
     db:
       condition: service_healthy
-    geoserver:
-      condition: service_healthy
 
 services:
 
@@ -97,22 +95,21 @@ services:
       interval: 60s
       timeout: 10s
       retries: 10
+    # entrypoint causes geoserver image to be missing from active running containers. logs show no errors
+    # entrypoint: ["/geoserver_data/data/printing/config/init-print.sh"]
     env_file:
       - .env
     ports:
       - "8080:8080"
     volumes:
-      - geoserver/config.yaml:/usr/local/tomcat/webapps/geoserver/data/printing/config.yaml
-      - geoserver/WAPP_logo.png:/usr/local/tomcat/webapps/geoserver/data/printing/WAPP_logo.png
       - geoserver-data-dir:/geoserver_data/data
       - backup-restore:/backup_restore
       - ../scripts:/geo_scripts
     restart: on-failure
     depends_on:
-      db:
-        condition: service_healthy
-      data-dir-conf:
-        condition: service_healthy
+      - db
+      - data-dir-conf
+      - django
 
   data-dir-conf:
     image: geonode/geoserver_data:2.23.1
