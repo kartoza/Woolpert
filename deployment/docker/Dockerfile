@@ -2,6 +2,7 @@ FROM python:3.10.2-buster AS prod
 LABEL GeoNode development team
 
 RUN mkdir -p /usr/src/woolpert
+RUN mkdir -p /entrypoint
 
 # Enable postgresql-client-13
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
@@ -46,6 +47,7 @@ RUN pip install pylibmc \
     && pip install sherlock
 
 # add bower and grunt command
+COPY src/geoserver-config /geoserver-config
 COPY src /usr/src/woolpert/
 WORKDIR /usr/src/woolpert
 
@@ -105,6 +107,8 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+
 
 # --------------------------------------------------------
 # Open ports as needed
