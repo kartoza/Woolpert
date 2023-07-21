@@ -21,6 +21,8 @@ x-common-django:
   depends_on:
     db:
       condition: service_healthy
+    geoserver:
+      condition: service_healthy
 
 services:
 
@@ -105,9 +107,10 @@ services:
       - ../scripts:/geo_scripts
     restart: on-failure
     depends_on:
-      - db
-      - data-dir-conf
-      - django
+      db:
+        condition: service_healthy
+      data-dir-conf:
+        condition: service_healthy
 
   data-dir-conf:
     image: geonode/geoserver_data:2.23.1
