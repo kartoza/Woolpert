@@ -47,9 +47,15 @@ load the data into a PostgreSQL database.
 6) Run the script and observer the results in the database.
 
 
-# Creating button for admin upload
-1) Log into django administration
-2) Click on "Menu Items"
-3) Click on the "Add menu button"
-4) Set the title to "Upload" (nb: the app looks for the Upload tag)
-5) Set the url to "/admin_upload/"
+# Uploading (new and historical) data
+1) Log into GeoNode instance.
+2) Click on "Profile"
+3) Select upload
+4) The upload form comes up and a user should fill the form appropriately.
+![upload_data](./images/upload.png)
+5) Scan the data to check for any errors and if none exist, submit.
+6) Visualize the results in GeoNode. If the layer extent does not immediately 
+change, give it a couple of seconds before refreshing the page again.
+**Note:** The upload assumes a user has already downloaded the `geopackage` template
+which contain the structure of the tables and the relationship. Only admins can
+upload data into the system.
