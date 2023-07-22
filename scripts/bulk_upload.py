@@ -110,7 +110,7 @@ def init_sql(master_layer, upload_layer):
                     # Add the geometry value to attribute_values
                     attribute_values.append(f"ST_GeomFromText('{geometry}')")
 
-                    value_string = "(" + ", ".join(attribute_values) + ")"
+                    value_string = ", ".join(attribute_values)
 
                     # Adjust the SQL statement based on the master_layer
                     condition = ""
@@ -214,7 +214,7 @@ def init_sql(master_layer, upload_layer):
 
                     if condition:
                         # Append the condition to the SQL statement
-                        sql_rows.append(value_string + f" WHERE {condition}")
+                        sql_rows.append(f"SELECT {value_string} WHERE {condition}")
                     else:
                         # Append the value string to the list of rows
                         sql_rows.append(value_string)
@@ -227,11 +227,11 @@ def init_sql(master_layer, upload_layer):
         print("Layer not found in relation_columns dictionary.")
 
     # Generate the INSERT INTO SQL statement
-    sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + ['geometry'])}) VALUES "
+    sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + ['geometry'])})  "
     sql_statement += ", ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
 
     # Generate the INSERT INTO SQL statement for skipped rows
-    skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields + ['geometry'])}) VALUES "
+    skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields + ['geometry'])})  "
     skipped_rows_sql += ", ".join(skipped_rows) + ";" if skipped_rows else "NO SKIPPED ROWS"
 
     return sql_statement, skipped_rows_sql
