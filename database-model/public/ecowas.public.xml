@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?><database name="ecowas" schema="public" type="PostgreSQL - 14.2 (Debian 14.2-1.pgdg110+1)">
+   <sequences>
+      <sequence increment="1" name="cable_type_id_seq" startValue="1"/>
+      <sequence increment="1" name="capacitor_id_seq" startValue="1"/>
+      <sequence increment="1" name="capacitor_type_id_seq" startValue="1"/>
+      <sequence increment="1" name="condition_id_seq" startValue="1"/>
+      <sequence increment="1" name="connection_id_seq" startValue="1"/>
+      <sequence increment="1" name="cooling_id_seq" startValue="1"/>
+      <sequence increment="1" name="general_type_id_seq" startValue="1"/>
+      <sequence increment="1" name="generator_id_seq" startValue="1"/>
+      <sequence increment="1" name="power_plant_id_seq" startValue="1"/>
+      <sequence increment="1" name="powerline_id_seq" startValue="1"/>
+      <sequence increment="1" name="powerline_type_id_seq" startValue="1"/>
+      <sequence increment="1" name="reactor_id_seq" startValue="1"/>
+      <sequence increment="1" name="shunt_reac_id_seq" startValue="1"/>
+      <sequence increment="1" name="situation_id_seq" startValue="1"/>
+      <sequence increment="1" name="status_id_seq" startValue="1"/>
+      <sequence increment="1" name="substation_area_id_seq" startValue="1"/>
+      <sequence increment="1" name="substation_id_seq" startValue="1"/>
+      <sequence increment="1" name="substation_type_id_seq" startValue="1"/>
+      <sequence increment="1" name="tap_ch_id_seq" startValue="1"/>
+      <sequence increment="1" name="transformer_connection_id_seq" startValue="1"/>
+      <sequence increment="1" name="transformer_id_seq" startValue="1"/>
+      <sequence increment="1" name="utility_id_seq" startValue="1"/>
+   </sequences>
+   <tables>
+      <table name="cable_type" numRows="5" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('cable_type_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="cable_type" foreignKey="powerline_cable_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="cable_type_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="cable_type_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="capacitor" numRows="234" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('capacitor_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="nominal_vo" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="mounting_p" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="output_mv" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="steps" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="source" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="country" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="capacitor_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="substation" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="capacitor_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="status" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="capacitor_status_fkey" implied="false" onDeleteCascade="false" schema="public" table="status"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="capacitor_type" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="capacitor_capacitor_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="capacitor_type"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="condition" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="capacitor_condition_fkey" implied="false" onDeleteCascade="false" schema="public" table="condition"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="capacitor_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="capacitor_type" numRows="16" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('capacitor_type_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="capacitor_type" foreignKey="capacitor_capacitor_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="capacitor"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="capacitor_type_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="capacitor_type_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="condition" numRows="3" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('condition_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="condition" foreignKey="capacitor_condition_fkey" implied="false" onDeleteCascade="false" schema="public" table="capacitor"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="condition_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="condition_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="connection" numRows="3" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('connection_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="connection" foreignKey="power_plant_connection_fkey" implied="false" onDeleteCascade="false" schema="public" table="power_plant"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="connection_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="connection_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="cooling" numRows="14" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('cooling_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="cooling" foreignKey="transformer_cooling_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="cooling_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="cooling_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="country" numRows="239" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="iso" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="country1" foreignKey="powerline_country1_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="country2" foreignKey="powerline_country2_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="country" foreignKey="capacitor_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="capacitor"/>
+            <child column="country" foreignKey="generator_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="generator"/>
+            <child column="country" foreignKey="power_plant_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="power_plant"/>
+            <child column="country" foreignKey="reactor_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="reactor"/>
+            <child column="country" foreignKey="substation_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+            <child column="country" foreignKey="substation_area_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation_area"/>
+            <child column="country" foreignKey="transformer_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <primaryKey column="iso" sequenceNumberInPK="1"/>
+         <index name="country_pkey" unique="true">
+            <column ascending="true" name="iso"/>
+         </index>
+         <index name="country_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="general_type" numRows="6" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('general_type_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="general_type" foreignKey="generator_general_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="generator"/>
+            <child column="general_type" foreignKey="power_plant_general_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="power_plant"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="general_type_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="general_type_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="generator" numRows="405" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('generator_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="year" nullable="true" remarks="" size="4" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="manufacturer" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="code" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="on_off" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="nominal_po" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="power_fact" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="nominal_ac" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="nominal_re" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="maximum_re" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="minimum_re" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="nominal_vo" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="nominal_sp" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="moment_sp" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="inertia_co" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="maximum_po" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="short_circ" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="saturated" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="unsaturate" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="saturated_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="unsaturated_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="saturated_2" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="unsaturated_2" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="23" name="saturated_3" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="24" name="unsaturated_3" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="saturated_4" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="unsaturated_4" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="27" name="unsaturated_5" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="armature_r" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="stator_lea" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="30" name="negative_s" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="negative_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="32" name="negative_2" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="zero_seque" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="34" name="zero_seq_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="35" name="three_phas" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="36" name="line_to_li" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="37" name="line_to_ne" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="38" name="d_axis_tra" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="39" name="d_axis_t_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="40" name="d_axis_sub" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="41" name="d_axis_s_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="42" name="short_ci_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="43" name="q_axis_sub" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="44" name="q_axis_tra" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="45" name="q_axis_s_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="46" name="q_axis_t_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="47" name="machine_fi" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="48" name="rated_exci" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="49" name="rated_ex_1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="50" name="minimum_fr" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="51" name="maximum_fr" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="52" name="source" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="53" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="54" name="country" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="generator_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="55" name="substation" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="generator_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="56" name="utility" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="generator_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="utility"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="57" name="general_type" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="generator_general_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="general_type"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="generator_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <checkConstraint constraint="((year &gt;= (1800)::numeric))" name="year_check"/>
+      </table>
+      <table name="geography_columns" numRows="0" remarks="" schema="public" type="VIEW" viewSql=" SELECT current_database() AS f_table_catalog,&#10;    n.nspname AS f_table_schema,&#10;    c.relname AS f_table_name,&#10;    a.attname AS f_geography_column,&#10;    postgis_typmod_dims(a.atttypmod) AS coord_dimension,&#10;    postgis_typmod_srid(a.atttypmod) AS srid,&#10;    postgis_typmod_type(a.atttypmod) AS type&#10;   FROM pg_class c,&#10;    pg_attribute a,&#10;    pg_type t,&#10;    pg_namespace n&#10;  WHERE ((t.typname = 'geography'::name) AND (a.attisdropped = false) AND (a.atttypid = t.oid) AND (a.attrelid = c.oid) AND (c.relnamespace = n.oid) AND (c.relkind = ANY (ARRAY['r'::&quot;char&quot;, 'v'::&quot;char&quot;, 'm'::&quot;char&quot;, 'f'::&quot;char&quot;, 'p'::&quot;char&quot;])) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="f_table_catalog" nullable="true" remarks="" size="2147483647" type="name" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="f_table_schema" nullable="true" remarks="" size="2147483647" type="name" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="f_table_name" nullable="true" remarks="" size="2147483647" type="name" typeCode="12">
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="f_geography_column" nullable="true" remarks="" size="2147483647" type="name" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="coord_dimension" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="srid" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="srid" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="spatial_ref_sys"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="type" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+      </table>
+      <table name="geometry_columns" numRows="0" remarks="" schema="public" type="VIEW" viewSql=" SELECT (current_database())::character varying(256) AS f_table_catalog,&#10;    n.nspname AS f_table_schema,&#10;    c.relname AS f_table_name,&#10;    a.attname AS f_geometry_column,&#10;    COALESCE(postgis_typmod_dims(a.atttypmod), sn.ndims, 2) AS coord_dimension,&#10;    COALESCE(NULLIF(postgis_typmod_srid(a.atttypmod), 0), sr.srid, 0) AS srid,&#10;    (replace(replace(COALESCE(NULLIF(upper(postgis_typmod_type(a.atttypmod)), 'GEOMETRY'::text), st.type, 'GEOMETRY'::text), 'ZM'::text, ''::text), 'Z'::text, ''::text))::character varying(30) AS type&#10;   FROM ((((((pg_class c&#10;     JOIN pg_attribute a ON (((a.attrelid = c.oid) AND (NOT a.attisdropped))))&#10;     JOIN pg_namespace n ON ((c.relnamespace = n.oid)))&#10;     JOIN pg_type t ON ((a.atttypid = t.oid)))&#10;     LEFT JOIN ( SELECT s.connamespace,&#10;            s.conrelid,&#10;            s.conkey,&#10;            replace(split_part(s.consrc, ''''::text, 2), ')'::text, ''::text) AS type&#10;           FROM ( SELECT pg_constraint.connamespace,&#10;                    pg_constraint.conrelid,&#10;                    pg_constraint.conkey,&#10;                    pg_get_constraintdef(pg_constraint.oid) AS consrc&#10;                   FROM pg_constraint) s&#10;          WHERE (s.consrc ~~* '%geometrytype(% = %'::text)) st ON (((st.connamespace = n.oid) AND (st.conrelid = c.oid) AND (a.attnum = ANY (st.conkey)))))&#10;     LEFT JOIN ( SELECT s.connamespace,&#10;            s.conrelid,&#10;            s.conkey,&#10;            (replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text))::integer AS ndims&#10;           FROM ( SELECT pg_constraint.connamespace,&#10;                    pg_constraint.conrelid,&#10;                    pg_constraint.conkey,&#10;                    pg_get_constraintdef(pg_constraint.oid) AS consrc&#10;                   FROM pg_constraint) s&#10;          WHERE (s.consrc ~~* '%ndims(% = %'::text)) sn ON (((sn.connamespace = n.oid) AND (sn.conrelid = c.oid) AND (a.attnum = ANY (sn.conkey)))))&#10;     LEFT JOIN ( SELECT s.connamespace,&#10;            s.conrelid,&#10;            s.conkey,&#10;            (replace(replace(split_part(s.consrc, ' = '::text, 2), ')'::text, ''::text), '('::text, ''::text))::integer AS srid&#10;           FROM ( SELECT pg_constraint.connamespace,&#10;                    pg_constraint.conrelid,&#10;                    pg_constraint.conkey,&#10;                    pg_get_constraintdef(pg_constraint.oid) AS consrc&#10;                   FROM pg_constraint) s&#10;          WHERE (s.consrc ~~* '%srid(% = %'::text)) sr ON (((sr.connamespace = n.oid) AND (sr.conrelid = c.oid) AND (a.attnum = ANY (sr.conkey)))))&#10;  WHERE ((c.relkind = ANY (ARRAY['r'::&quot;char&quot;, 'v'::&quot;char&quot;, 'm'::&quot;char&quot;, 'f'::&quot;char&quot;, 'p'::&quot;char&quot;])) AND (NOT (c.relname = 'raster_columns'::name)) AND (t.typname = 'geometry'::name) AND (NOT pg_is_other_temp_schema(c.relnamespace)) AND has_table_privilege(c.oid, 'SELECT'::text));">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="f_table_catalog" nullable="true" remarks="" size="256" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="f_table_schema" nullable="true" remarks="" size="2147483647" type="name" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="f_table_name" nullable="true" remarks="" size="2147483647" type="name" typeCode="12">
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="f_geometry_column" nullable="true" remarks="" size="2147483647" type="name" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="coord_dimension" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="srid" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="srid" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="spatial_ref_sys"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="type" nullable="true" remarks="" size="30" type="varchar" typeCode="12"/>
+      </table>
+      <table name="power_plant" numRows="572" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('power_plant_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="description" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="mw_inst" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="mw_disp" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="capac_inst" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="year" nullable="true" remarks="" size="4" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="community" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="source" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="buffer" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="country" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="power_plant_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="situation" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="power_plant_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="situation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="general_type" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="power_plant_general_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="general_type"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="connection" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="power_plant_connection_fkey" implied="false" onDeleteCascade="false" schema="public" table="connection"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="power_plant_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="powerline" numRows="1567" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('powerline_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="oper_volt" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="km" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="c_inst" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="c_design" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="multipart" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="numl" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="numckt" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="circuit" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="nr_para_li" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="nr_para_ck" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="partckt" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="year" nullable="true" remarks="" size="4" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="start_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="end_date" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="metadata" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="country1" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="iso" foreignKey="powerline_country1_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="country2" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="iso" foreignKey="powerline_country2_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="situation" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="powerline_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="situation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="ext1" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="powerline_ext1_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="ext2" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="powerline_ext2_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="23" name="powerline_type" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="powerline_powerline_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline_type"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="24" name="cable_type" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="powerline_cable_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="cable_type"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="utility" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="powerline_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="utility"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="all_countries" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="27" name="comments" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="name_c" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="name_f" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="30" name="name" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="ckt_name" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="32" name="voltage_kv" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="powerline_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <checkConstraint constraint="((end_date &gt;= start_date))" name="end_date_check"/>
+      </table>
+      <table name="powerline_type" numRows="3" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('powerline_type_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="powerline_type" foreignKey="powerline_powerline_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="powerline_type_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="powerline_type_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="qgis_projects" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="cable_type"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="capacitor_type"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="condition"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="connection"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="cooling"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="country"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="general_type"/>
+            <child column="f_table_name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="geography_columns"/>
+            <child column="f_table_name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="geometry_columns"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="power_plant"/>
+            <child column="ckt_name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="powerline_type"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="shunt_reac"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="situation"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="status"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="substation"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="substation_area"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="substation_type"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="tap_ch"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="transformer_connection"/>
+            <child column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="utility"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="metadata" nullable="true" remarks="" size="2147483647" type="jsonb" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="content" nullable="true" remarks="" size="2147483647" type="bytea" typeCode="-2"/>
+         <primaryKey column="name" sequenceNumberInPK="1"/>
+         <index name="qgis_projects_pkey" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="reactor" numRows="52" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('reactor_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="rated_volt" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="year" nullable="true" remarks="" size="13" type="date" typeCode="91"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="serial_number" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="offload_s" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="onload_s" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="minimum_ra_mvar" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="maximum_ra_mvar" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="source" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="country" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="reactor_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="substation" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="reactor_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="shunt_reac" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="reactor_shunt_reac_fkey" implied="false" onDeleteCascade="false" schema="public" table="shunt_reac"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="reactor_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="shunt_reac" numRows="2" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('shunt_reac_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="shunt_reac" foreignKey="reactor_shunt_reac_fkey" implied="false" onDeleteCascade="false" schema="public" table="reactor"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="shunt_reac_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="shunt_reac_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="situation" numRows="6" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('situation_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="situation" foreignKey="power_plant_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="power_plant"/>
+            <child column="situation" foreignKey="powerline_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="situation" foreignKey="substation_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+            <child column="situation" foreignKey="substation_area_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation_area"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="situation_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="situation_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="spatial_ref_sys" numRows="8500" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="srid" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <child column="srid" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="geography_columns"/>
+            <child column="srid" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="geometry_columns"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="auth_name" nullable="true" remarks="" size="256" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="auth_srid" nullable="true" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="srtext" nullable="true" remarks="" size="2048" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="proj4text" nullable="true" remarks="" size="2048" type="varchar" typeCode="12"/>
+         <primaryKey column="srid" sequenceNumberInPK="1"/>
+         <index name="spatial_ref_sys_pkey" unique="true">
+            <column ascending="true" name="srid"/>
+         </index>
+         <checkConstraint constraint="(((srid &gt; 0) AND (srid &lt;= 998999)))" name="spatial_ref_sys_srid_check"/>
+      </table>
+      <table name="status" numRows="3" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('status_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="status" foreignKey="capacitor_status_fkey" implied="false" onDeleteCascade="false" schema="public" table="capacitor"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="status_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="status_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="substation" numRows="881" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('substation_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="substation" foreignKey="capacitor_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="capacitor"/>
+            <child column="substation" foreignKey="generator_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="generator"/>
+            <child column="ext1" foreignKey="powerline_ext1_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="ext2" foreignKey="powerline_ext2_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="substation" foreignKey="reactor_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="reactor"/>
+            <child column="substation" foreignKey="transformer_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="2" name="voltage_kv" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="3" name="min_vol_kv" nullable="true" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="year" nullable="true" remarks="" size="4" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="descriptif" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="rural" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="ph2500" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="y3857" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="coord" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="source" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="metadata" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="country" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="substation_type" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_substation_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation_type"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="situation" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="situation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="utility" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="utility"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="substation_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="substation_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+         <checkConstraint constraint="(((ph2500 &gt;= 0) AND (ph2500 &lt;= 1)))" name="ph2500_check"/>
+         <checkConstraint constraint="(((rural &gt;= 0) AND (rural &lt;= 1)))" name="rural_check"/>
+         <checkConstraint constraint="((year &gt;= (1800)::numeric))" name="year_check"/>
+      </table>
+      <table name="substation_area" numRows="882" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('substation_area_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="2" name="voltage_kv" nullable="false" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="17" id="3" name="min_vol_kv" nullable="false" remarks="" size="17" type="float8" typeCode="8"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="year" nullable="true" remarks="" size="4" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="descriptif" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="rural" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="ph2500" nullable="false" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="y3857" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="coord" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="source" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="notes" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="metadata" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="country" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_area_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="substation_type" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_area_substation_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation_type"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="situation" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_area_situation_fkey" implied="false" onDeleteCascade="false" schema="public" table="situation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="utility" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="substation_area_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="utility"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="substation_area_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="substation_area_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+         <checkConstraint constraint="(((ph2500 &gt;= 0) AND (ph2500 &lt;= 1)))" name="ph2500_check"/>
+         <checkConstraint constraint="(((rural &gt;= 0) AND (rural &lt;= 1)))" name="rural_check"/>
+         <checkConstraint constraint="((year &gt;= (1800)::numeric))" name="year_check"/>
+      </table>
+      <table name="substation_type" numRows="8" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('substation_type_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="substation_type" foreignKey="substation_substation_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+            <child column="substation_type" foreignKey="substation_area_substation_type_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation_area"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="substation_type_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="substation_type_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="tap_ch" numRows="3" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('tap_ch_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="tap_ch" foreignKey="transformer_tap_ch_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="tap_ch_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="tap_ch_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="transformer" numRows="1166" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('transformer_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="t_id" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="make" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="year" nullable="true" remarks="" size="4" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="v1" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="v2" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="v3" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="remarks" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="p1" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="p2" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="p3" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="tap_kv" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="range" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="steps" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="14" name="imp_base" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="15" name="imp12" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="16" name="r12" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="17" name="x12" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="18" name="imp13" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="19" name="r13" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="20" name="x13" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="21" name="imp23" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="22" name="r23" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="23" name="x23" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="24" name="xscc" nullable="true" remarks="" size="0" type="numeric" typeCode="2"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="25" name="imax" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="26" name="protect" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="27" name="source" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="28" name="geometry" nullable="true" remarks="" size="2147483647" type="geometry" typeCode="1111"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="29" name="country" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="transformer_country_fkey" implied="false" onDeleteCascade="false" schema="public" table="country"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="30" name="substation" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="transformer_substation_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="31" name="utility" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="transformer_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="utility"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="32" name="cooling" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="transformer_cooling_fkey" implied="false" onDeleteCascade="false" schema="public" table="cooling"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="33" name="tap_ch" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="transformer_tap_ch_fkey" implied="false" onDeleteCascade="false" schema="public" table="tap_ch"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="34" name="connection" nullable="true" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent column="name" foreignKey="transformer_connection_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer_connection"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="transformer_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <checkConstraint constraint="((year &gt;= (1800)::numeric))" name="year_check"/>
+      </table>
+      <table name="transformer_connection" numRows="36" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('transformer_connection_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="connection" foreignKey="transformer_connection_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="transformer_connection_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="transformer_connection_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+      <table name="utility" numRows="42" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('utility_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child column="utility" foreignKey="generator_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="generator"/>
+            <child column="utility" foreignKey="powerline_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="powerline"/>
+            <child column="utility" foreignKey="substation_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation"/>
+            <child column="utility" foreignKey="substation_area_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="substation_area"/>
+            <child column="utility" foreignKey="transformer_utility_fkey" implied="false" onDeleteCascade="false" schema="public" table="transformer"/>
+            <parent column="name" foreignKey="Implied Constraint" implied="true" onDeleteCascade="false" schema="public" table="qgis_projects"/>
+         </column>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="utility_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="utility_name_key" unique="true">
+            <column ascending="true" name="name"/>
+         </index>
+      </table>
+   </tables>
+</database>

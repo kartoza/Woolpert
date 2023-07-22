@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>ecowas.public</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+        <!-- Bootstrap 3.3.5 -->
+        <link rel="stylesheet" href="bower/admin-lte/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="bower/font-awesome/css/font-awesome.min.css">
+        <!-- Ionicons -->
+        <link rel="stylesheet" href="bower/ionicons/css/ionicons.min.css">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="bower/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        <link rel="stylesheet" href="bower/datatables.net-buttons-bs/css/buttons.bootstrap.min.css">
+        <!-- Code Mirror -->
+        <link rel="stylesheet" href="bower/codemirror/codemirror.css">
+        <!-- Fonts -->
+        <link href='fonts/indieflower/indie-flower.css' rel='stylesheet' type='text/css'>
+        <link href='fonts/source-sans-pro/source-sans-pro.css' rel='stylesheet' type='text/css'>
+
+        <!-- Theme style -->
+        <link rel="stylesheet" href="bower/admin-lte/dist/css/AdminLTE.min.css">
+        <!-- Salvattore -->
+        <link rel="stylesheet" href="bower/salvattore/salvattore.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="bower/admin-lte/dist/css/skins/_all-skins.min.css">
+        <!-- SchemaSpy -->
+        <link rel="stylesheet" href="schemaSpy.css">
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+        <script src="bower/html5shiv/html5shiv.min.js"></script>
+        <script src="bower/respond/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <!-- ADD THE CLASS layout-top-nav TO REMOVE THE SIDEBAR. -->
+    <body class="hold-transition skin-blue layout-top-nav">
+        <div class="wrapper">
+            <header class="main-header">
+                <nav class="navbar navbar-static-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <a href="../index.html" class="navbar-brand"><b>ecowas</b></a><span class="navbar-brand" style="padding-left: 0">.public</span>
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"><i class="fa fa-bars"></i></button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+                        <div class="collapse navbar-collapse pull-left" id="navbar-collapse">
+                            <ul class="nav navbar-nav">
+                                <li><a href="index.html">Tables <span class="sr-only">(current)</span></a></li>
+                                <li><a href="columns.html" title="All of the columns in the schema">Columns</a></li>
+                                <li><a href="constraints.html" title="Useful for diagnosing error messages that just give constraint name or number">Constraints</a></li>
+                                <li><a href="relationships.html" title="Diagram of table relationships">Relationships</a></li>
+                                <li><a href="orphans.html" title="View of tables with neither parents nor children">Orphan&nbsp;Tables</a></li>
+                                <li><a href="anomalies.html" title="Things that might not be quite right">Anomalies</a></li>
+                                <li><a href="routines.html" title="Procedures and functions">Routines</a></li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                        <!-- Navbar Right Menu -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </header>
+            <!-- Main content -->
+            <!-- Full Width Column -->
+            <div class="content-wrapper">
+                <!-- Content Header (Page header) -->
+                <section class="content-header">
+                    <h1>All Relationships</h1>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-code-fork"></i>
+                            <h3 class="box-title">Diagrams</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="nav-tabs-custom">
+                                <!-- Tabs within a box -->
+                                <h5>By default only columns that are primary keys, foreign keys or indexes are shown.</h5>
+                                <ul class="nav nav-tabs pull-left ui-sortable-handle">
+                                    <li class="active"><a href="#compactDegreeImg-chart" data-toggle="tab" aria-expanded="true">Compact</a></li>
+                                    <li class=""><a href="#largeDegreeImg-chart" data-toggle="tab" aria-expanded="true">Large</a></li>
+                                    <li class=""><a href="#compactimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Compact Implied</a></li>
+                                    <li class=""><a href="#largeimpliedDegreeImg-chart" data-toggle="tab" aria-expanded="true">Large Implied</a></li>
+                                </ul>
+                                <div class="tab-content no-padding">
+                                    <div class="chart tab-pane active" id="compactDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="compactRelationshipsDiagram" name="compactRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/generator.html" target="_top" title="generator" alt="" coords="639,744,818,979">
+<area shape="rect" id="node5" href="tables/country.html" target="_top" title="country" alt="" coords="43,710,195,856">
+<area shape="rect" id="node15" href="tables/general_type.html" target="_top" title="general_type" alt="" coords="19,82,219,204">
+<area shape="rect" id="node18" href="tables/substation.html" target="_top" title="substation" alt="" coords="330,851,523,1115">
+<area shape="rect" id="node22" href="tables/utility.html" target="_top" title="utility" alt="" coords="49,1380,190,1503">
+<area shape="rect" id="node2" href="tables/transformer_connection.html" target="_top" title="transformer_connection" alt="" coords="277,1978,576,2100">
+<area shape="rect" id="node3" href="tables/power_plant.html" target="_top" title="power_plant" alt="" coords="329,146,524,410">
+<area shape="rect" id="node10" href="tables/situation.html" target="_top" title="situation" alt="" coords="37,907,201,1030">
+<area shape="rect" id="node13" href="tables/connection.html" target="_top" title="connection" alt="" coords="28,263,211,386">
+<area shape="rect" id="node4" href="tables/status.html" target="_top" title="status" alt="" coords="357,2118,497,2240">
+<area shape="rect" id="node6" href="tables/cooling.html" target="_top" title="cooling" alt="" coords="353,1698,501,1820">
+<area shape="rect" id="node7" href="tables/capacitor_type.html" target="_top" title="capacitor_type" alt="" coords="319,2258,535,2380">
+<area shape="rect" id="node8" href="tables/powerline.html" target="_top" title="powerline" alt="" coords="635,316,822,727">
+<area shape="rect" id="node17" href="tables/powerline_type.html" target="_top" title="powerline_type" alt="" coords="316,463,537,586">
+<area shape="rect" id="node21" href="tables/cable_type.html" target="_top" title="cable_type" alt="" coords="337,603,517,726">
+<area shape="rect" id="node9" href="tables/transformer.html" target="_top" title="transformer" alt="" coords="633,1572,825,1866">
+<area shape="rect" id="node14" href="tables/tap_ch.html" target="_top" title="tap_ch" alt="" coords="355,1838,498,1960">
+<area shape="rect" id="node11" href="tables/capacitor.html" target="_top" title="capacitor" alt="" coords="638,2059,819,2323">
+<area shape="rect" id="node19" href="tables/condition.html" target="_top" title="condition" alt="" coords="343,2398,511,2520">
+<area shape="rect" id="node12" href="tables/substation_type.html" target="_top" title="substation_type" alt="" coords="5,1154,233,1276">
+<area shape="rect" id="node16" href="tables/reactor.html" target="_top" title="reactor" alt="" coords="620,996,837,1202">
+<area shape="rect" id="node23" href="tables/shunt_reac.html" target="_top" title="shunt_reac" alt="" coords="336,1522,517,1644">
+<area shape="rect" id="node20" href="tables/substation_area.html" target="_top" title="substation_area" alt="" coords="313,1168,541,1432">
+</map>
+                                        <a name='diagram'><img id="compactDegreeImg" src="diagrams/summary/relationships.real.compact.png" usemap="#compactRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="largeDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="largeRelationshipsDiagram" name="largeRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/generator.html" target="_top" title="generator" alt="" coords="639,1055,818,2820">
+<area shape="rect" id="node5" href="tables/country.html" target="_top" title="country" alt="" coords="43,1883,195,2035">
+<area shape="rect" id="node15" href="tables/general_type.html" target="_top" title="general_type" alt="" coords="19,1132,219,1255">
+<area shape="rect" id="node18" href="tables/substation.html" target="_top" title="substation" alt="" coords="330,2024,523,2616">
+<area shape="rect" id="node22" href="tables/utility.html" target="_top" title="utility" alt="" coords="49,3209,190,3332">
+<area shape="rect" id="node2" href="tables/transformer_connection.html" target="_top" title="transformer_connection" alt="" coords="277,4379,576,4501">
+<area shape="rect" id="node3" href="tables/power_plant.html" target="_top" title="power_plant" alt="" coords="329,1049,524,1583">
+<area shape="rect" id="node10" href="tables/situation.html" target="_top" title="situation" alt="" coords="37,2259,201,2381">
+<area shape="rect" id="node13" href="tables/connection.html" target="_top" title="connection" alt="" coords="28,1460,211,1583">
+<area shape="rect" id="node4" href="tables/status.html" target="_top" title="status" alt="" coords="357,4532,497,4655">
+<area shape="rect" id="node6" href="tables/cooling.html" target="_top" title="cooling" alt="" coords="353,4099,501,4221">
+<area shape="rect" id="node7" href="tables/capacitor_type.html" target="_top" title="capacitor_type" alt="" coords="319,4672,535,4795">
+<area shape="rect" id="node8" href="tables/powerline.html" target="_top" title="powerline" alt="" coords="635,5,822,1037">
+<area shape="rect" id="node17" href="tables/powerline_type.html" target="_top" title="powerline_type" alt="" coords="316,1636,537,1759">
+<area shape="rect" id="node21" href="tables/cable_type.html" target="_top" title="cable_type" alt="" coords="337,1776,517,1899">
+<area shape="rect" id="node9" href="tables/transformer.html" target="_top" title="transformer" alt="" coords="633,3300,825,4391">
+<area shape="rect" id="node14" href="tables/tap_ch.html" target="_top" title="tap_ch" alt="" coords="355,4239,498,4361">
+<area shape="rect" id="node11" href="tables/capacitor.html" target="_top" title="capacitor" alt="" coords="638,4408,819,4824">
+<area shape="rect" id="node19" href="tables/condition.html" target="_top" title="condition" alt="" coords="343,4812,511,4935">
+<area shape="rect" id="node12" href="tables/substation_type.html" target="_top" title="substation_type" alt="" coords="5,2837,233,2960">
+<area shape="rect" id="node16" href="tables/reactor.html" target="_top" title="reactor" alt="" coords="620,2837,837,3283">
+<area shape="rect" id="node23" href="tables/shunt_reac.html" target="_top" title="shunt_reac" alt="" coords="336,3351,517,3473">
+<area shape="rect" id="node20" href="tables/substation_area.html" target="_top" title="substation_area" alt="" coords="313,2669,541,3261">
+</map>
+                                        <a name='diagram'><img id="largeDegreeImg" src="diagrams/summary/relationships.real.large.png" usemap="#largeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="compactimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="compactImpliedRelationshipsDiagram" name="compactImpliedRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/generator.html" target="_top" title="generator" alt="" coords="899,1316,1078,1551">
+<area shape="rect" id="node6" href="tables/country.html" target="_top" title="country" alt="" coords="339,955,491,1101">
+<area shape="rect" id="node17" href="tables/general_type.html" target="_top" title="general_type" alt="" coords="315,1785,515,1908">
+<area shape="rect" id="node20" href="tables/substation.html" target="_top" title="substation" alt="" coords="625,1361,819,1625">
+<area shape="rect" id="node24" href="tables/utility.html" target="_top" title="utility" alt="" coords="344,1469,485,1592">
+<area shape="rect" id="node2" href="tables/transformer_connection.html" target="_top" title="transformer_connection" alt="" coords="265,240,564,363">
+<area shape="rect" id="node10" href="tables/qgis_projects.html" target="_top" title="qgis_projects" alt="" coords="12,1429,215,1547">
+<area shape="rect" id="node3" href="tables/spatial_ref_sys.html" target="_top" title="spatial_ref_sys" alt="" coords="5,2519,221,2636">
+<area shape="rect" id="node4" href="tables/power_plant.html" target="_top" title="power_plant" alt="" coords="625,1751,819,2015">
+<area shape="rect" id="node12" href="tables/situation.html" target="_top" title="situation" alt="" coords="333,1609,497,1732">
+<area shape="rect" id="node15" href="tables/connection.html" target="_top" title="connection" alt="" coords="323,1925,506,2048">
+<area shape="rect" id="node5" href="tables/status.html" target="_top" title="status" alt="" coords="652,268,792,391">
+<area shape="rect" id="node7" href="tables/cooling.html" target="_top" title="cooling" alt="" coords="341,5,489,128">
+<area shape="rect" id="node8" href="tables/capacitor_type.html" target="_top" title="capacitor_type" alt="" coords="614,408,830,531">
+<area shape="rect" id="node9" href="tables/powerline.html" target="_top" title="powerline" alt="" coords="895,1568,1082,1979">
+<area shape="rect" id="node19" href="tables/powerline_type.html" target="_top" title="powerline_type" alt="" coords="611,2068,833,2191">
+<area shape="rect" id="node23" href="tables/cable_type.html" target="_top" title="cable_type" alt="" coords="632,2208,812,2331">
+<area shape="rect" id="node11" href="tables/transformer.html" target="_top" title="transformer" alt="" coords="893,87,1085,380">
+<area shape="rect" id="node16" href="tables/tap_ch.html" target="_top" title="tap_ch" alt="" coords="651,92,793,215">
+<area shape="rect" id="node13" href="tables/capacitor.html" target="_top" title="capacitor" alt="" coords="898,467,1079,731">
+<area shape="rect" id="node21" href="tables/condition.html" target="_top" title="condition" alt="" coords="638,584,806,707">
+<area shape="rect" id="node14" href="tables/substation_type.html" target="_top" title="substation_type" alt="" coords="301,1329,529,1452">
+<area shape="rect" id="node18" href="tables/reactor.html" target="_top" title="reactor" alt="" coords="880,867,1097,1072">
+<area shape="rect" id="node25" href="tables/shunt_reac.html" target="_top" title="shunt_reac" alt="" coords="631,760,813,883">
+<area shape="rect" id="node22" href="tables/substation_area.html" target="_top" title="substation_area" alt="" coords="608,1044,836,1308">
+<area shape="rect" id="node26" href="tables/geography_columns.html" target="_top" title="geography_columns" alt="" coords="285,2560,545,2683">
+<area shape="rect" id="node27" href="tables/geometry_columns.html" target="_top" title="geometry_columns" alt="" coords="289,2420,540,2543">
+</map>
+                                        <a name='diagram'><img id="compactimpliedDegreeImg" src="diagrams/summary/relationships.implied.compact.png" usemap="#compactImpliedRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                    <div class="chart tab-pane " id="largeimpliedDegreeImg-chart" style="position: relative; overflow-x:auto;">
+                                        <map id="largeImpliedRelationshipsDiagram" name="largeImpliedRelationshipsDiagram">
+<area shape="rect" id="node1" href="tables/generator.html" target="_top" title="generator" alt="" coords="899,2009,1078,3775">
+<area shape="rect" id="node6" href="tables/country.html" target="_top" title="country" alt="" coords="339,2064,491,2216">
+<area shape="rect" id="node17" href="tables/general_type.html" target="_top" title="general_type" alt="" coords="315,3931,515,4053">
+<area shape="rect" id="node20" href="tables/substation.html" target="_top" title="substation" alt="" coords="625,2832,819,3424">
+<area shape="rect" id="node24" href="tables/utility.html" target="_top" title="utility" alt="" coords="344,3175,485,3297">
+<area shape="rect" id="node2" href="tables/transformer_connection.html" target="_top" title="transformer_connection" alt="" coords="265,1393,564,1516">
+<area shape="rect" id="node10" href="tables/qgis_projects.html" target="_top" title="qgis_projects" alt="" coords="12,3152,215,3304">
+<area shape="rect" id="node3" href="tables/spatial_ref_sys.html" target="_top" title="spatial_ref_sys" alt="" coords="5,4765,221,4976">
+<area shape="rect" id="node4" href="tables/power_plant.html" target="_top" title="power_plant" alt="" coords="625,3549,819,4083">
+<area shape="rect" id="node12" href="tables/situation.html" target="_top" title="situation" alt="" coords="333,3315,497,3437">
+<area shape="rect" id="node15" href="tables/connection.html" target="_top" title="connection" alt="" coords="323,3747,506,3869">
+<area shape="rect" id="node5" href="tables/status.html" target="_top" title="status" alt="" coords="652,1380,792,1503">
+<area shape="rect" id="node7" href="tables/cooling.html" target="_top" title="cooling" alt="" coords="341,1160,489,1283">
+<area shape="rect" id="node8" href="tables/capacitor_type.html" target="_top" title="capacitor_type" alt="" coords="614,1523,830,1645">
+<area shape="rect" id="node9" href="tables/powerline.html" target="_top" title="powerline" alt="" coords="895,3792,1082,4824">
+<area shape="rect" id="node19" href="tables/powerline_type.html" target="_top" title="powerline_type" alt="" coords="611,4136,833,4259">
+<area shape="rect" id="node23" href="tables/cable_type.html" target="_top" title="cable_type" alt="" coords="632,4276,812,4399">
+<area shape="rect" id="node11" href="tables/transformer.html" target="_top" title="transformer" alt="" coords="893,5,1085,1096">
+<area shape="rect" id="node16" href="tables/tap_ch.html" target="_top" title="tap_ch" alt="" coords="651,1067,793,1189">
+<area shape="rect" id="node13" href="tables/capacitor.html" target="_top" title="capacitor" alt="" coords="898,1113,1079,1529">
+<area shape="rect" id="node21" href="tables/condition.html" target="_top" title="condition" alt="" coords="638,1711,806,1833">
+<area shape="rect" id="node14" href="tables/substation_type.html" target="_top" title="substation_type" alt="" coords="301,2999,529,3121">
+<area shape="rect" id="node18" href="tables/reactor.html" target="_top" title="reactor" alt="" coords="880,1547,1097,1992">
+<area shape="rect" id="node25" href="tables/shunt_reac.html" target="_top" title="shunt_reac" alt="" coords="631,1867,813,1989">
+<area shape="rect" id="node22" href="tables/substation_area.html" target="_top" title="substation_area" alt="" coords="608,2187,836,2779">
+<area shape="rect" id="node26" href="tables/geography_columns.html" target="_top" title="geography_columns" alt="" coords="285,4488,545,4733">
+<area shape="rect" id="node27" href="tables/geometry_columns.html" target="_top" title="geometry_columns" alt="" coords="289,4751,540,4996">
+</map>
+                                        <a name='diagram'><img id="largeimpliedDegreeImg" src="diagrams/summary/relationships.implied.large.png" usemap="#largeImpliedRelationshipsDiagram" class="diagram" border="0" align="left"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- /.box-body -->
+                    </div>
+                </section>
+            </div>
+            <!-- /.content-wrapper -->
+            <footer class="main-footer">
+                <div>
+                    <div class="pull-right hidden-xs">
+                        <a href="https://github.com/schemaspy/schemaspy" title="GitHub for SchemaSpy"><i class="fa fa-github-square fa-2x"></i></a>
+                        <a href="http://stackoverflow.com/questions/tagged/schemaspy" title="StackOverflow for SchemaSpy"><i class="fa fa-stack-overflow fa-2x"></i></a>
+                    </div>
+                    <strong>Generated by <a href="http://schemaspy.org/" class="logo-text"><i class="fa fa-database"></i> SchemaSpy 6.2.4</a></strong>
+                </div>
+                <!-- /.container -->
+            </footer>
+        </div>
+        <!-- ./wrapper -->
+
+        <!-- jQuery 2.2.3 -->
+        <script src="bower/admin-lte/plugins/jQuery/jquery-2.2.3.min.js"></script>
+        <script src="bower/admin-lte/plugins/jQueryUI/jquery-ui.min.js"></script>
+        <!-- Bootstrap 3.3.5 -->
+        <script src="bower/admin-lte/bootstrap/js/bootstrap.min.js"></script>
+        <!-- DataTables -->
+        <script src="bower/datatables.net/jquery.dataTables.min.js"></script>
+        <script src="bower/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+        <script src="bower/datatables.net-buttons/dataTables.buttons.min.js"></script>
+        <script src="bower/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.html5.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.print.min.js"></script>
+        <script src="bower/datatables.net-buttons/buttons.colVis.min.js"></script>
+        <!-- SheetJS -->
+        <script src="bower/js-xlsx/xlsx.full.min.js"></script>
+        <!-- pdfmake -->
+        <script src="bower/pdfmake/pdfmake.min.js"></script>
+        <script src="bower/pdfmake/vfs_fonts.js"></script>
+        <!-- SlimScroll -->
+        <script src="bower/admin-lte/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <!-- FastClick -->
+        <script src="bower/admin-lte/plugins/fastclick/fastclick.js"></script>
+        <!-- Salvattore -->
+        <script src="bower/salvattore/salvattore.min.js"></script>
+        <!-- AnchorJS -->
+        <script src="bower/anchor-js/anchor.min.js"></script>
+        <!-- CodeMirror -->
+        <script src="bower/codemirror/codemirror.js"></script>
+        <script src="bower/codemirror/sql.js"></script>
+        <!-- AdminLTE App -->
+        <script src="bower/admin-lte/dist/js/app.min.js"></script>
+        <script src="relationships.js"></script>
+        <script src="schemaSpy.js"></script>
+    </body>
+</html>
