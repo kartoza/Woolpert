@@ -1,7 +1,7 @@
 """
-Name : Upload layer data into PostgreSQL table
+Name : Upload layer data into PostgreSQL/Geopackage table
 Group : Kartoza
-Import  Merge Upstream layers into a PostgreSQL database.
+Import  Merge Upstream layers into a PostgreSQL/Geopackage database.
 """
 from PyQt5.QtCore import QCoreApplication, QVariant, QDate
 from qgis.core import QgsProcessing
@@ -34,6 +34,20 @@ def lowercase_field_names(upload_layer):
         # with edit(upload_layer):
         #     idx = upload_layer.fields().indexFromName(name)
         #     upload_layer.renameAttribute(idx, name.lower())
+
+
+def get_data_source_type(layer):
+    source_type = layer.source()
+    extension = '.gpkg'
+
+    if extension in source_type:
+        geo_check = True
+    return geo_check
+
+
+def geopackage_path(layer):
+    path = layer.source().split("|")[0]
+    return path
 
 
 def init_sql(master_layer, upload_layer):
@@ -264,15 +278,20 @@ class Model(QgsProcessingAlgorithm):
 
         master_layer_pg = self.parameterAsLayer(parameters, 'master_vector_layer', context)
         upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
-        print(init_sql(master_layer_pg, upload_layer_qgis)[0])
+        # Execute PostgreSQL/Geopackage  SQL
 
-        # PostgreSQL execute SQL
-        alg_params = {
-            'DATABASE': parameters['Connection'],
-            'SQL': '%s' % init_sql(master_layer_pg, upload_layer_qgis)[0]
-        }
-        outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
-                                                         feedback=feedback, is_child_algorithm=True)
+        if get_data_source_type(master_layer_pg) is True:
+            # Execute SQL, replace this logic when https://github.com/qgis/QGIS/issues/53905 is fixed
+            md = QgsProviderRegistry.instance().providerMetadata("ogr")
+            connection = md.createConnection(geopackage_path(master_layer_pg), {})
+            connection.executeSql('%s' % init_sql(master_layer_pg, upload_layer_qgis)[0])
+        else:
+            alg_params = {
+                'DATABASE': parameters['Connection'],
+                'SQL': '%s' % init_sql(master_layer_pg, upload_layer_qgis)[0]
+            }
+            outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
+                                                             feedback=feedback, is_child_algorithm=True)
         return results
 
     def tr(self, string):
@@ -299,10 +318,10 @@ class Model(QgsProcessingAlgorithm):
         )
 
     def name(self):
-        return 'Update PostgreSQL vector layers'
+        return 'Update PostgreSQL/Geopackage vector layers'
 
     def displayName(self):
-        return 'Update PostgreSQL vector layers'
+        return 'Update PostgreSQL/Geopackage vector layers'
 
     def group(self):
         return 'GIS'
