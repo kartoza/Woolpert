@@ -284,7 +284,9 @@ class Model(QgsProcessingAlgorithm):
             # Execute SQL, replace this logic when https://github.com/qgis/QGIS/issues/53905 is fixed
             md = QgsProviderRegistry.instance().providerMetadata("ogr")
             connection = md.createConnection(geopackage_path(master_layer_pg), {})
+            # connection.executeSql('select EnableGpkgAmphibiousMode()')
             connection.executeSql('%s' % init_sql(master_layer_pg, upload_layer_qgis)[0])
+            md.disconnect()
         else:
             alg_params = {
                 'DATABASE': parameters['Connection'],
