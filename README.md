@@ -1,4 +1,4 @@
-![Image Tag](https://img.shields.io/badge/Staging%20Image%20Tag:-0.0.1--c59a451-blue.svg)
+![Image Tag](https://img.shields.io/badge/Staging%20Image%20Tag:-0.0.1--3d351d1-blue.svg)
 ![Jenkins Status](https://img.shields.io/badge/Staging%20Jenkins%20Build%20Status:-SUCCESS-green.svg)
 
 # Woolpert
@@ -37,9 +37,25 @@ load the data into a PostgreSQL database.
 ![management_command](images/management_command_job.png)
 7) Run the job and then inspect the layers in GeoNode.
 
-# Creating button for admin upload
-1) Log into django administration
-2) Click on "Menu Items"
-3) Click on the "Add menu button"
-4) Set the title to "Upload" (nb: the app looks for the Upload tag)
-5) Set the url to "/admin_upload/"
+# Uploading Data using QGIS
+1) Download the script `bulk_upload.py` in teh scripts folder.
+2) Navigate to QGIS and choose the processing model > scripts.
+3) Choose create script option.
+4) In the editor that shows up, choose open script and save the script.
+5) Choose the script and run following the options defined in the help menu.
+![upload](images/upload_script.png)
+6) Run the script and observer the results in the database.
+
+
+# Uploading (new and historical) data
+1) Log into GeoNode instance.
+2) Click on "Profile"
+3) Select upload
+4) The upload form comes up and a user should fill the form appropriately.
+![upload_data](./images/upload.png)
+5) Scan the data to check for any errors and if none exist, submit.
+6) Visualize the results in GeoNode. If the layer extent does not immediately 
+change, give it a couple of seconds before refreshing the page again.
+**Note:** The upload assumes a user has already downloaded the `geopackage` template
+which contain the structure of the tables and the relationship. Only admins can
+upload data into the system.

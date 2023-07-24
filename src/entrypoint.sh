@@ -3,6 +3,34 @@
 # Exit script in case of error
 set -e
 
+# Fix issue with geoip DB init
+if [[ ! -f /mnt/volumes/statics/geoip.db ]];then
+    GEOLITE_DOWNLOAD_URL="https://git.io/GeoLite2-City.mmdb"
+    if [[ `wget -S --spider ${GEOLITE_DOWNLOAD_URL}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+         wget --progress=bar:force:noscroll -c --tries=2 ${GEOLITE_DOWNLOAD_URL} -O /mnt/volumes/statics/geoip.db
+    else
+        echo -e "URL : \e[1;31m ${GEOLITE_DOWNLOAD_URL} does not exists \033[0m"
+    fi
+
+fi
+# Copy print configs to geoserver data dir
+function copy_configs() {
+
+  if [[ -f /geoserver-config/WAPP_logo.png ]];then
+    cp -r  /geoserver-config/WAPP_logo.png $GEOSERVER_DATA_DIR/printing/
+  fi
+
+  if [[ -f /geoserver-config/config.yaml ]];then
+    cp -r  /geoserver-config/config.yaml $GEOSERVER_DATA_DIR/printing/
+  fi
+
+  if [[ -f /geoserver-config/test.png ]];then
+    cp -r  /geoserver-config/test.png $GEOSERVER_DATA_DIR/printing/
+  fi
+
+
+}
+
 INVOKE_LOG_STDOUT=${INVOKE_LOG_STDOUT:-FALSE}
 invoke () {
     if [ $INVOKE_LOG_STDOUT = 'true' ] || [ $INVOKE_LOG_STDOUT = 'True' ]
@@ -88,6 +116,7 @@ else
 
         invoke statics
         invoke waitforgeoserver
+        copy_configs
         invoke geoserverfixture
 
         echo "Executing UWSGI server $cmd for Production"
