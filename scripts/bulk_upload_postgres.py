@@ -1,7 +1,7 @@
 """
-Name : Upload layer data into PostgreSQL/Geopackage table
+Name : Upload layer data into PostgreSQL table
 Group : Kartoza
-Import  Merge Upstream layers into a PostgreSQL/Geopackage database.
+Import  Merge Upstream layers into a PostgreSQL database.
 """
 from PyQt5.QtCore import QCoreApplication, QVariant, QDate
 from qgis.core import QgsProcessing
@@ -12,14 +12,18 @@ from qgis.core import QgsProcessingParameterProviderConnection
 from qgis.core import QgsProcessingParameterDatabaseSchema
 from qgis.core import QgsProviderRegistry, QgsDataSourceUri
 from qgis.core import QgsProcessingParameterBoolean
+from qgis.core import QgsProcessingException
 import processing
 
 
+
 def layer_primary_key(master_layer):
+    layer_pk = None
     master_layer_source = master_layer.source().split(" ")
     for detail in master_layer_source:
         if detail.startswith('key'):
             layer_pk = detail.replace("key=", '')
+            break
     return layer_pk
 
 
@@ -27,6 +31,8 @@ def lowercase_field_names(upload_layer):
     # Convert field names to lowercase
     for field in upload_layer.fields():
         name = field.name()
+        if name.islower():
+            continue
         upload_layer.startEditing()
         idx = upload_layer.fields().indexFromName(name)
         upload_layer.renameAttribute(idx, name.lower())
@@ -34,20 +40,6 @@ def lowercase_field_names(upload_layer):
         # with edit(upload_layer):
         #     idx = upload_layer.fields().indexFromName(name)
         #     upload_layer.renameAttribute(idx, name.lower())
-
-
-def get_data_source_type(layer):
-    source_type = layer.source()
-    extension = '.gpkg'
-
-    if extension in source_type:
-        geo_check = True
-    return geo_check
-
-
-def geopackage_path(layer):
-    path = layer.source().split("|")[0]
-    return path
 
 
 def init_sql(master_layer, upload_layer):
@@ -71,12 +63,28 @@ def init_sql(master_layer, upload_layer):
     skipped_rows = []  # List to store the individual rows for the skipped_rows SQL statement
 
     # Define a dictionary that maps table names to their respective relation columns
+    #TODO Dynamically create this list using the SQL, useful if table structure changes
+
+    # """" SELECT key_column_usage.column_name,key_column_usage.table_schema,key_column_usage.table_name,
+    # key_column_usage.constraint_catalog
+    # FROM information_schema.table_constraints
+    # JOIN information_schema.key_column_usage ON table_constraints.constraint_schema = key_column_usage.constraint_schema
+    #      AND table_constraints.constraint_name = key_column_usage.constraint_name
+    # JOIN information_schema.referential_constraints ON table_constraints.constraint_schema =
+    # referential_constraints.constraint_schema
+    #      AND table_constraints.constraint_name = referential_constraints.constraint_name
+    # JOIN information_schema.table_constraints AS table_constraints1 ON referential_constraints.unique_constraint_schema
+    # = table_constraints1.constraint_schema
+    #      AND referential_constraints.unique_constraint_name = table_constraints1.constraint_name
+    # WHERE table_constraints.constraint_type = 'FOREIGN KEY' and key_column_usage.table_name = 'capacitor'
+    # ORDER BY key_column_usage.column_name asc"""
+
     relation_columns = {
         'capacitor': {'country', 'substation', 'status', 'capacitor_type', 'condition'},
         'substation': {'country', 'substation_type', 'situation', 'utility'},
         'transformer': {'country', 'substation', 'utility', 'cooling', 'tap_ch', 'connection'},
         'reactor': {'country', 'substation', 'shunt_reac'},
-        'powerline': {'country'},
+        'powerline': {'country', 'country2', 'cable_type', 'ext1', 'ext2', 'powerline_type', 'situation', 'utility'},
         'generator': {'country', 'substation', 'utility', 'general_type'},
         'powerplant': {'country', 'general_type', 'situation', 'connection'}
     }
@@ -184,7 +192,6 @@ def init_sql(master_layer, upload_layer):
                         """
                     elif master_layer.name() == 'powerline':
                         # Powerline table
-                        powerline_relation_columns = {'country', ''}
                         condition = f"""
                             EXISTS (
                                 SELECT 1
@@ -236,9 +243,12 @@ def init_sql(master_layer, upload_layer):
                     # Append the value string to the list of skipped rows
                     skipped_rows.append(value_string)
         else:
-            print("Not all relation columns are available in common_fields.")
+            missing_values = relation_columns[f"{master_layer.name()}"]
+            raise QgsProcessingException('The table {} does not contain all columns needed for FK relations,\
+            check if the columns {} are in your layer'.format(upload_layer.name(), missing_values))
     else:
-        print("Layer not found in relation_columns dictionary.")
+        raise QgsProcessingException('Layer not found in relation_columns dictionary {}'.format(master_layer))
+        #print("Layer not found in relation_columns dictionary.")
 
     # Generate the INSERT INTO SQL statement
     sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + ['geometry'])})  "
@@ -262,10 +272,10 @@ class Model(QgsProcessingAlgorithm):
                                                             defaultValue=None))
         self.addParameter(
             QgsProcessingParameterProviderConnection('Connection', 'Database Connection', 'postgres',
-                                                     defaultValue=None))
+                                                      defaultValue=None))
         self.addParameter(
             QgsProcessingParameterDatabaseSchema('Project', 'Database Schema', connectionParameterName='Connection',
-                                                 defaultValue='public'))
+                                                  defaultValue='public'))
         self.addParameter(
             QgsProcessingParameterBoolean('VERBOSE_LOG', 'Verbose logging', optional=False, defaultValue=True))
 
@@ -278,22 +288,13 @@ class Model(QgsProcessingAlgorithm):
 
         master_layer_pg = self.parameterAsLayer(parameters, 'master_vector_layer', context)
         upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
-        # Execute PostgreSQL/Geopackage  SQL
-
-        if get_data_source_type(master_layer_pg) is True:
-            # Execute SQL, replace this logic when https://github.com/qgis/QGIS/issues/53905 is fixed
-            md = QgsProviderRegistry.instance().providerMetadata("ogr")
-            connection = md.createConnection(geopackage_path(master_layer_pg), {})
-            # connection.executeSql('select EnableGpkgAmphibiousMode()')
-            connection.executeSql('%s' % init_sql(master_layer_pg, upload_layer_qgis)[0])
-            md.disconnect()
-        else:
-            alg_params = {
-                'DATABASE': parameters['Connection'],
-                'SQL': '%s' % init_sql(master_layer_pg, upload_layer_qgis)[0]
-            }
-            outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
-                                                             feedback=feedback, is_child_algorithm=True)
+        # Execute PostgreSQL  SQL
+        alg_params = {
+            'DATABASE': parameters['Connection'],
+            'SQL': '%s' % init_sql(master_layer_pg, upload_layer_qgis)[0]
+        }
+        outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
+                                                         feedback=feedback, is_child_algorithm=True)
         return results
 
     def tr(self, string):
@@ -320,10 +321,10 @@ class Model(QgsProcessingAlgorithm):
         )
 
     def name(self):
-        return 'Update PostgreSQL/Geopackage vector layers'
+        return 'Update PostgreSQL vector layers'
 
     def displayName(self):
-        return 'Update PostgreSQL/Geopackage vector layers'
+        return 'Update PostgreSQL vector layers'
 
     def group(self):
         return 'GIS'

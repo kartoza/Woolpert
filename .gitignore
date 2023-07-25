@@ -1,2 +1,5 @@
 .idea/*
 src/woolpert/__pycache__
+src/celerybeat-schedule
+src/invoke.log
+deployment/.env
