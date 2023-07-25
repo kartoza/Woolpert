@@ -28,7 +28,7 @@ def layer_primary_key(master_layer):
     master_layer_source = master_layer.source().split(" ")
     for detail in master_layer_source:
         if detail.startswith('key'):
-            layer_pk = detail.replace("key=", '')
+            layer_pk = detail.replace("key=", '').lower()
             break
     return layer_pk
 
@@ -77,8 +77,8 @@ def init_sql(master_layer, upload_layer):
     # Get the intersection of the field names
     common_fields = list(set(master_layer_fields).intersection(upload_layer_fields))
     # Remove PK in common fields if it exists
-    if layer_pk in common_fields:
-        common_fields.remove(layer_pk)
+    if layer_pk.replace("'", '') in common_fields:
+        common_fields.remove(layer_pk.replace("'", ''))
 
     # Generate the INSERT INTO SQL statement
     sql_rows = []  # List to store the individual rows for the SQL statement
@@ -142,6 +142,8 @@ def init_sql(master_layer, upload_layer):
 
                     # Adjust the SQL statement based on the master_layer
                     condition = ""
+                    sub_station_formatted_value = feature['substation'].replace("'", "''")
+                    country_formatted_value = feature['country'].replace("'", "''")
                     if master_layer.name() == 'capacitor':
                         # Capacitor table
                         condition = f"""
@@ -149,8 +151,8 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country, public.substation, public.status, public.capacitor_type, public.condition
                                 WHERE
-                                    public.country.name = '{feature['country']}'
-                                    AND public.substation.name = '{feature['substation']}'
+                                    public.country.name = '{country_formatted_value}'
+                                    AND public.substation.name = '{sub_station_formatted_value}'
                                     AND public.status.name = '{feature['status']}'
                                     AND public.capacitor_type.name = '{feature['capacitor_type']}'
                                     AND public.condition.name = '{feature['condition']}'
@@ -163,7 +165,7 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country, public.substation_type, public.situation, public.utility
                                 WHERE
-                                    public.country.name = '{feature['country']}'
+                                    public.country.name = '{country_formatted_value}'
                                     AND public.substation_type.name = '{feature['substation_type']}'
                                     AND public.situation.name = '{feature['situation']}'
                                     AND public.utility.name = '{feature['utility']}'
@@ -176,8 +178,8 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country, public.substation, public.utility, public.cooling, public.tap_ch, public.transformer_connection
                                 WHERE
-                                    public.country.name = '{feature['country']}'
-                                    AND public.substation.name = '{feature['substation']}'
+                                    public.country.name = '{country_formatted_value}'
+                                    AND public.substation.name = '{sub_station_formatted_value}'
                                     AND public.utility.name = '{feature['utility']}'
                                     AND public.cooling.name = '{feature['cooling']}'
                                     AND public.tap_ch.name = '{feature['tap_ch']}'
@@ -191,8 +193,8 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country, public.substation, public.shunt_reac
                                 WHERE
-                                    public.country.name = '{feature['country']}'
-                                    AND public.substation.name = '{feature['substation']}'
+                                    public.country.name = '{country_formatted_value}'
+                                    AND public.substation.name = '{sub_station_formatted_value}'
                                     AND public.shunt_reac.name = '{feature['shunt_reac']}'
                             )
                         """
@@ -203,11 +205,11 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country, public.substation, public.situation, public.powerline_type, public.cable_type
                                 WHERE
-                                    public.country.name = '{feature['country']}'
-                                    AND public.substation.name = '{feature['country']}'
-                                    AND public.situation.name = '{feature['country']}'
-                                    AND public.powerline_type.name = '{feature['country']}'
-                                    AND public.cable_type.name = '{feature['country']}'
+                                    public.country.name = '{country_formatted_value}'
+                                    AND public.substation.name = '{country_formatted_value}'
+                                    AND public.situation.name = '{country_formatted_value}'
+                                    AND public.powerline_type.name = '{country_formatted_value}'
+                                    AND public.cable_type.name = '{country_formatted_value}'
                             )
                         """
                     elif master_layer.name() == 'generator':
@@ -217,8 +219,8 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country, public.substation, public.utility, public.general_type
                                 WHERE
-                                    public.country.name = '{feature['country']}'
-                                    AND public.substation.name = '{feature['substation']}'
+                                    public.country.name = '{country_formatted_value}'
+                                    AND public.substation.name = '{sub_station_formatted_value}'
                                     AND public.utility.name = '{feature['utility']}'
                                     AND public.general_type.name = '{feature['general_type']}'
                             )
@@ -230,7 +232,7 @@ def init_sql(master_layer, upload_layer):
                                 SELECT 1
                                 FROM public.country public.general_type, public.situation, public.connection
                                 WHERE
-                                    public.country.name = '{feature['country']}'
+                                    public.country.name = '{country_formatted_value}'
                                     AND public.general_type.name = '{feature['general_type']}'
                                     AND public.situation.name = '{feature['situation']}'
                                     AND public.connection.name = '{feature['connection']}'
@@ -257,7 +259,7 @@ def init_sql(master_layer, upload_layer):
 
     # Generate the INSERT INTO SQL statement
     sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + ['geometry'])})  "
-    sql_statement += ", ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
+    sql_statement += "UNION ALL ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
 
     # Generate the INSERT INTO SQL statement for skipped rows
     skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields + ['geometry'])})  "
