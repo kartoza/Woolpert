@@ -90,9 +90,9 @@ def init_sql(master_layer, upload_layer):
         'substation': {'country', 'substation_type', 'situation', 'utility'},
         'transformer': {'country', 'substation', 'utility', 'cooling', 'tap_ch', 'connection'},
         'reactor': {'country', 'substation', 'shunt_reac'},
-        'powerline': {'country', 'country2', 'cable_type', 'ext1', 'ext2', 'powerline_type', 'situation', 'utility'},
+        'powerline': {'country1', 'country2', 'cable_type', 'ext1', 'ext2', 'powerline_type', 'situation', 'utility'},
         'generator': {'country', 'substation', 'utility', 'general_type'},
-        'powerplant': {'country', 'general_type', 'situation', 'connection'}
+        'power_plant': {'country', 'general_type', 'situation', 'connection'}
     }
 
     if master_layer.name() in relation_columns:
