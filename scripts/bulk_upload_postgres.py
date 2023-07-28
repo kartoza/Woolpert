@@ -50,6 +50,27 @@ def geometry_column_name(db_connection, db_table):
     return layer_geometry_column
 
 
+def layer_data_types(db_connection, db_table):
+    # Connect to the PostgreSQL database
+    conn = database_connection(db_connection)
+    cursor = conn.cursor()
+    # Define the SQL query to get foreign key relationships for the given table
+    sql_query = f"""
+    SELECT column_name,data_type FROM
+    information_schema.columns
+    WHERE
+    table_name = '{db_table}' and  column_name not in (
+    select f_geometry_column from geometry_columns where f_table_schema = 'public'
+    and f_table_name = '{db_table}');
+    """
+    cursor.execute(sql_query)
+    layer_data_column = cursor.fetchall()
+    layer_column_dict = {}
+    for layer_value, layer_data_type in layer_data_column:
+        layer_column_dict.update({layer_value: layer_data_type})
+    return layer_column_dict
+
+
 def fk_sql(db_connection, db_table, db_feature):
     # Connect to the PostgreSQL database
     conn = database_connection(db_connection)
@@ -187,6 +208,7 @@ def init_sql(master_layer, upload_layer, db_connection):
     if master_layer.name() in relation_columns:
         table_relation_columns = relation_columns[master_layer.name()]
         condition_columns = [column for column in table_relation_columns if column in common_fields]
+        layer_data_types_dict_values = layer_data_types(db_connection, master_layer.name())
 
         # Check if all relation columns are contained in common_fields
         if len(condition_columns) == len(table_relation_columns):
@@ -195,30 +217,35 @@ def init_sql(master_layer, upload_layer, db_connection):
                 skip_row = False
 
                 for field in common_fields:
-                    value = feature[field.lower()]
-                    if field in table_relation_columns:
+                    for dict_key, dict_value in layer_data_types_dict_values.items():
+                        if field == dict_key:
+                            value = feature[field.lower()]
+                            if field in table_relation_columns:
 
-                        # Check for NULL values in the fields defined in relation_columns
-                        if value is None:
-                            skip_row = True
-                            break
+                                # Check for NULL values in the fields defined in relation_columns
+                                if value is None:
+                                    skip_row = True
+                                    break
 
-                    if isinstance(value, str):
-                        if field in upload_layer_fields and upload_layer_fields[field].type() in [QVariant.Double,
-                                                                                                  QVariant.Int]:
-                            skip_row = True
-                            break
+                            if isinstance(value, str):
+                                if field in upload_layer_fields and upload_layer_fields[field].type() in [
+                                    QVariant.Double, QVariant.Int]:
+                                    skip_row = True
+                                    break
 
-                        if value.find("'") != -1:
-                            formatted_value = value.replace("'", "''")
-                            value = f"'{formatted_value}'"
-                        else:
-                            value = f"'{value}'"
-                    elif isinstance(value, QDate):
-                        date_value = value.toPyDate()
-                        value = f"'{date_value}'"
+                                if value.find("'") != -1:
+                                    formatted_value = value.replace("'", "''")
+                                    value = f"'{formatted_value}'"
+                                else:
+                                    value = f"'{value}'"
+                            elif isinstance(value, QDate):
+                                date_value = value.toPyDate()
+                                value = f"'{date_value}'"
 
-                    attribute_values.append(str(value))
+                            # Include dict_value in the SQL statement
+                            value_string = f"{value}" + '::' + f"{dict_value}"
+
+                            attribute_values.append(str(value_string))
 
                 if not skip_row and len(attribute_values) == len(common_fields):
                     # Get the geometry as WKT
@@ -243,14 +270,16 @@ def init_sql(master_layer, upload_layer, db_connection):
                     skipped_rows.append(value_string)
         else:
             missing_values = relation_columns[f"{master_layer.name()}"]
-            raise QgsProcessingException('The table {} does not contain all columns needed for FK relations,\
-            check if the columns {} are in your layer'.format(upload_layer.name(), missing_values))
+            raise QgsProcessingException(
+                'The table {} does not contain all columns needed for FK relations, '
+                'check if the columns {} are in your layer'.format(upload_layer.name(), missing_values))
     else:
         raise QgsProcessingException('Layer not found in relation_columns dictionary {}'.format(master_layer))
 
     # Generate the INSERT INTO SQL statement
     master_layer_geometry_column = geometry_column_name(db_connection, master_layer.name())
     sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + [master_layer_geometry_column])}) "
+
     sql_statement += " UNION ALL ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
 
     # Generate the INSERT INTO SQL statement for skipped rows
