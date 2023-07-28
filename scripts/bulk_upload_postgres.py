@@ -10,7 +10,7 @@ from qgis.core import QgsProcessingMultiStepFeedback
 from qgis.core import QgsProcessingParameterVectorLayer
 from qgis.core import QgsProcessingParameterProviderConnection
 from qgis.core import QgsProcessingParameterDatabaseSchema
-from qgis.core import QgsProviderRegistry, QgsDataSourceUri
+from qgis.core import QgsProviderRegistry
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingException
 import processing
@@ -18,7 +18,7 @@ from psycopg2 import connect, OperationalError
 import sys
 
 
-def layer_fk_columns(db_connection, db_table):
+def database_connection(db_connection):
     connection_name = db_connection
     md = QgsProviderRegistry.instance().providerMetadata('postgres')
     conn = md.createConnection(connection_name)
@@ -33,7 +33,63 @@ def layer_fk_columns(db_connection, db_table):
         raise QgsProcessingException(
             'PostgreSQL connection cannot be established, exiting. Please check your connection paramaters')
         sys.exit(1)
+    return connection
 
+
+def fk_sql(db_connection, db_table, db_feature):
+    # Connect to the PostgreSQL database
+    conn = database_connection(db_connection)
+    cursor = conn.cursor()
+    # Define the SQL query to get foreign key relationships for the given table
+    sql_query = f"""
+    SELECT
+        tc.table_schema, 
+        tc.table_name, 
+        kcu.column_name, 
+        ccu.table_schema AS foreign_table_schema,
+        ccu.table_name AS foreign_table_name,
+        ccu.column_name AS foreign_column_name 
+    FROM 
+        information_schema.table_constraints AS tc 
+        JOIN information_schema.key_column_usage AS kcu
+          ON tc.constraint_name = kcu.constraint_name
+          AND tc.table_schema = kcu.table_schema
+        JOIN information_schema.constraint_column_usage AS ccu
+          ON ccu.constraint_name = tc.constraint_name
+          AND ccu.table_schema = tc.table_schema
+    WHERE 
+        tc.constraint_type = 'FOREIGN KEY' 
+        AND tc.table_name = '{db_table}';
+    """
+
+    # Execute the SQL query and fetch the results
+    cursor.execute(sql_query)
+    foreign_keys = cursor.fetchall()
+
+    # Initialize the lists to store the WHERE conditions
+    where_tables = []
+    where_table_values = []
+
+    # Loop through the foreign keys and construct the WHERE conditions
+    for foreign_key in foreign_keys:
+        table_schema, table_name, column_name, foreign_table_schema, foreign_table_name, foreign_column_name = foreign_key
+        if column_name in ["substation", "country"]:
+            column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
+        else:
+            column_name = db_feature.attribute("%s" % column_name)
+        where_tables.append(f"{foreign_table_schema}.{foreign_table_name}")
+        where_table_values.append(
+            f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'")
+
+    # Combine the WHERE conditions into the final SQL query
+    sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(where_table_values)} "
+    # Close the database connection
+    conn.close()
+    return sql_query
+
+
+def layer_fk_columns(db_connection, db_table):
+    connection = database_connection(db_connection)
     cursor = connection.cursor()
     sql = """SELECT key_column_usage.column_name 
     FROM information_schema.table_constraints 
@@ -129,7 +185,7 @@ def init_sql(master_layer, upload_layer, db_connection):
                     if field in table_relation_columns:
 
                         # Check for NULL values in the fields defined in relation_columns
-                        if value == NULL:
+                        if value is None:
                             skip_row = True
                             break
 
@@ -160,111 +216,8 @@ def init_sql(master_layer, upload_layer, db_connection):
                     value_string = ", ".join(attribute_values)
 
                     # Adjust the SQL statement based on the master_layer
-                    condition = ""
-                    sub_station_formatted_value = feature['substation'].replace("'", "''")
-                    country_formatted_value = feature['country'].replace("'", "''")
-                    if master_layer.name() == 'capacitor':
-                        # Capacitor table
-                        sub_station_formatted_value = feature['substation'].replace("'", "''")
-                        country_formatted_value = feature['country'].replace("'", "''")
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country, public.substation, public.status, public.capacitor_type,
-                                 public.condition
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.substation.name = '{sub_station_formatted_value}'
-                                    AND public.status.name = '{feature['status']}'
-                                    AND public.capacitor_type.name = '{feature['capacitor_type']}'
-                                    AND public.condition.name = '{feature['condition']}'
-                            )
-                        """
-                    elif master_layer.name() == 'substation':
-                        # Substation table
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country, public.substation_type, public.situation, public.utility
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.substation_type.name = '{feature['substation_type']}'
-                                    AND public.situation.name = '{feature['situation']}'
-                                    AND public.utility.name = '{feature['utility']}'
-                            )
-                        """
-                    elif master_layer.name() == 'transformer':
-                        # Transformer table
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country, public.substation, public.utility, public.cooling, 
-                                public.tap_ch, public.transformer_connection
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.substation.name = '{sub_station_formatted_value}'
-                                    AND public.utility.name = '{feature['utility']}'
-                                    AND public.cooling.name = '{feature['cooling']}'
-                                    AND public.tap_ch.name = '{feature['tap_ch']}'
-                                    AND public.transformer_connection.name = '{feature['connection']}'
-                            )
-                        """
-                    elif master_layer.name() == 'reactor':
-                        # Reactor table
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country, public.substation, public.shunt_reac
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.substation.name = '{sub_station_formatted_value}'
-                                    AND public.shunt_reac.name = '{feature['shunt_reac']}'
-                            )
-                        """
-                    elif master_layer.name() == 'powerline':
-                        # Powerline table
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country, public.substation, public.situation, public.powerline_type, 
-                                public.cable_type
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.substation.name = '{feature['country']}'
-                                    AND public.situation.name = '{feature['country']}'
-                                    AND public.powerline_type.name = '{feature['country']}'
-                                    AND public.cable_type.name = '{feature['country']}'
-                            )
-                        """
-                    elif master_layer.name() == 'generator':
-                        # Generator table
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country, public.substation, public.utility, public.general_type
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.substation.name = '{sub_station_formatted_value}'
-                                    AND public.utility.name = '{feature['utility']}'
-                                    AND public.general_type.name = '{feature['general_type']}'
-                            )
-                        """
-                    elif master_layer.name() == 'power_plant':
-                        # Powerplant table
-                        condition = f"""
-                            EXISTS (
-                                SELECT 1
-                                FROM public.country public.general_type, public.situation, public.connection
-                                WHERE
-                                    public.country.name = '{country_formatted_value}'
-                                    AND public.general_type.name = '{feature['general_type']}'
-                                    AND public.situation.name = '{feature['situation']}'
-                                    AND public.connection.name = '{feature['connection']}'
-                            )
-                        """
-                    else:
-                        condition = ""
-
+                    condition_sql = fk_sql(db_connection, master_layer.name(), feature)
+                    condition = f"EXISTS ({condition_sql})"
                     if condition:
                         # Append the condition to the SQL statement
                         sql_rows.append(f"SELECT {value_string} WHERE {condition}")
@@ -283,7 +236,7 @@ def init_sql(master_layer, upload_layer, db_connection):
 
     # Generate the INSERT INTO SQL statement
     sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + ['geom'])})  "
-    sql_statement += "UNION ALL ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
+    sql_statement += " UNION ALL ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
 
     # Generate the INSERT INTO SQL statement for skipped rows
     skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields + ['geom'])})  "
@@ -320,7 +273,8 @@ class Model(QgsProcessingAlgorithm):
         master_layer_pg = self.parameterAsLayer(parameters, 'master_vector_layer', context)
         upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
         print("The combined SQL is: ", init_sql(master_layer_pg, upload_layer_qgis,
-                                                self.parameterAsConnectionName(parameters, 'Connection', context))[0])
+                                                self.parameterAsConnectionName(parameters,
+                                                                               'Connection', context))[0])
         # Execute PostgreSQL  SQL
         alg_params = {
             'DATABASE': parameters['Connection'],
@@ -346,11 +300,16 @@ class Model(QgsProcessingAlgorithm):
         return self.tr(
             "Update PostgreSQL vector layers \n\
             <mark style='color:blue'><strong>Algorithm Parameters</strong></mark>\n\
-            <i>\n* <mark style='color:black'><strong>Master Vector Layer</strong></mark> - Loaded QGIS layer or OGR vector layer stored in PostgresQL.\
-            \n* <mark style='color:black'><strong>Connection</strong></mark> - PostgreSQL connection name. Must be a PostgreSQL service name or normal connection.\
-            \n* <mark style='color:black'><strong>Input Vector Layer</strong></mark> - Vector layer which you need to copy features into a default layer.\
+            <i>\n* <mark style='color:black'><strong>Master Vector Layer</strong></mark> - Loaded QGIS layer or "
+            "OGR vector layer stored in PostgresQL.\
+            \n* <mark style='color:black'><strong>Connection</strong></mark> - PostgreSQL connection name."
+            " Must be a PostgreSQL service name or normal connection.\
+            \n* <mark style='color:black'><strong>Input Vector Layer</strong></mark> - Vector layer which you need "
+            "to copy features into a default layer.\
             <mark style='color:black'><strong>NOTE</strong></mark>\n\
-            <mark style='color:black'>The algorithm will only select matching columns and use that to insert records. Foreign key columns should not be null, if they are they will be skipped in the upload.If the data type does not match the column name it is skipped and a SQL is provided to show the missed rows. \n\
+            <mark style='color:black'>The algorithm will only select matching columns and use that to insert records. "
+            "Foreign key columns should not be null, if they are they will be skipped in the upload.If the data type "
+            "does not match the column name it is skipped and a SQL is provided to show the missed rows. \n\
             "
         )
 
