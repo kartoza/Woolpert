@@ -36,6 +36,20 @@ def database_connection(db_connection):
     return connection
 
 
+def geometry_column_name(db_connection, db_table):
+    # Connect to the PostgreSQL database
+    conn = database_connection(db_connection)
+    cursor = conn.cursor()
+    # Define the SQL query to get foreign key relationships for the given table
+    sql_query = f"""
+    select f_geometry_column from geometry_columns where f_table_schema = 'public'
+    and f_table_name = '{db_table}';
+    """
+    cursor.execute(sql_query)
+    layer_geometry_column = cursor.fetchone()[0]
+    return layer_geometry_column
+
+
 def fk_sql(db_connection, db_table, db_feature):
     # Connect to the PostgreSQL database
     conn = database_connection(db_connection)
@@ -235,11 +249,12 @@ def init_sql(master_layer, upload_layer, db_connection):
         raise QgsProcessingException('Layer not found in relation_columns dictionary {}'.format(master_layer))
 
     # Generate the INSERT INTO SQL statement
-    sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + ['geom'])})  "
+    master_layer_geometry_column = geometry_column_name(db_connection, master_layer.name())
+    sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + [master_layer_geometry_column])}) "
     sql_statement += " UNION ALL ".join(sql_rows) + ";" if sql_rows else "INVALID SQL STATEMENT"
 
     # Generate the INSERT INTO SQL statement for skipped rows
-    skipped_rows_sql = f"INSERT INTO Skipped_Rows ({', '.join(common_fields + ['geom'])})  "
+    skipped_rows_sql = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + [master_layer_geometry_column])}) "
     skipped_rows_sql += ", ".join(skipped_rows) + ";" if skipped_rows else "NO SKIPPED ROWS"
 
     return sql_statement, skipped_rows_sql
