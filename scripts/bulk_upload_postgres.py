@@ -251,7 +251,7 @@ class Model(QgsProcessingAlgorithm):
             # Check if all relation columns are contained in common_fields
             upload_layer_source = upload_layer.getFeatures()
             if len(condition_columns) == len(table_relation_columns):
-                for current,feature in enumerate(upload_layer_source):
+                for current, feature in enumerate(upload_layer_source):
                     if feedback.isCanceled():
                         break
                     feedback.setProgress(int(current * total))
