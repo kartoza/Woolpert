@@ -47,13 +47,16 @@ class Model(QgsProcessingAlgorithm):
         upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
         print("The combined SQL is: ", self.init_sql(master_layer_pg, upload_layer_qgis,
                                                      self.parameterAsConnectionName(parameters,
-                                                                                    'Connection', context), feedback)[0])
+                                                                                    'Connection', context),
+                                                     feedback,
+                                                     self.parameterAsSchema(parameters, 'Project', context))[0])
         # Execute PostgreSQL  SQL
 
         alg_params = {
             'DATABASE': parameters['Connection'],
             'SQL': '%s' % self.init_sql(master_layer_pg, upload_layer_qgis,
-                                        self.parameterAsConnectionName(parameters, 'Connection', context), feedback)[0]
+                                        self.parameterAsConnectionName(parameters, 'Connection', context), feedback,
+                                        self.parameterAsSchema(parameters, 'Project', context))[0]
         }
         outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
                                                          feedback=feedback, is_child_algorithm=True)
@@ -89,7 +92,7 @@ class Model(QgsProcessingAlgorithm):
         layer_geometry_column = cursor.fetchone()[0]
         return layer_geometry_column
 
-    def layer_data_types(self, db_connection, db_table):
+    def layer_data_types(self, db_connection, db_table, db_schema):
         # Connect to the PostgreSQL database
         conn = self.database_connection(db_connection)
         cursor = conn.cursor()
@@ -99,7 +102,7 @@ class Model(QgsProcessingAlgorithm):
         information_schema.columns
         WHERE
         table_name = '{db_table}' and  column_name not in (
-        select f_geometry_column from geometry_columns where f_table_schema = 'public'
+        select f_geometry_column from geometry_columns where f_table_schema = '{db_schema}'
         and f_table_name = '{db_table}');
         """
         cursor.execute(sql_query)
@@ -149,9 +152,12 @@ class Model(QgsProcessingAlgorithm):
                 foreign_column_name = foreign_key
             # Fix special characters in attribute value
             column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
-            where_tables.append(f"{foreign_table_schema}.{foreign_table_name}")
-            where_table_values.append(
-                f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'")
+            sql_where_tables = f"{foreign_table_schema}.{foreign_table_name}"
+            if sql_where_tables not in where_tables:
+                where_tables.append(sql_where_tables)
+            sql_where_table_values = f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'"
+            if sql_where_table_values not in where_table_values:
+                where_table_values.append(sql_where_table_values)
 
         # Combine the WHERE conditions into the final SQL query
         sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(where_table_values)} "
@@ -207,7 +213,7 @@ class Model(QgsProcessingAlgorithm):
             #     idx = upload_layer.fields().indexFromName(name)
             #     upload_layer.renameAttribute(idx, name.lower())
 
-    def init_sql(self, master_layer, upload_layer, db_connection, feedback):
+    def init_sql(self, master_layer, upload_layer, db_connection, feedback, db_schema):
         upload_layer_qgis_count = upload_layer.featureCount()
         total = 100.0 / upload_layer_qgis_count if upload_layer_qgis_count else 0
         self.lowercase_field_names(upload_layer)
@@ -244,7 +250,7 @@ class Model(QgsProcessingAlgorithm):
         if master_layer.name() in relation_columns:
             table_relation_columns = relation_columns[master_layer.name()]
             condition_columns = [column for column in table_relation_columns if column in common_fields]
-            layer_data_types_dict_values = self.layer_data_types(db_connection, master_layer.name())
+            layer_data_types_dict_values = self.layer_data_types(db_connection, master_layer.name(), db_schema)
 
             # Check if all relation columns are contained in common_fields
             upload_layer_source = upload_layer.getFeatures()
@@ -318,7 +324,7 @@ class Model(QgsProcessingAlgorithm):
             raise QgsProcessingException('Layer not found in relation_columns dictionary {}'.format(master_layer))
 
         # Generate the INSERT INTO SQL statement
-        #feedback.setProgress(int(count * total))
+        # feedback.setProgress(int(count * total))
         master_layer_geometry_column = self.geometry_column_name(db_connection, master_layer.name())
         sql_statement = f"INSERT INTO {master_layer.name()} ({', '.join(common_fields + [master_layer_geometry_column])}) "
 
