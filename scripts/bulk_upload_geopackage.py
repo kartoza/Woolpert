@@ -50,7 +50,7 @@ class Model(QgsProcessingAlgorithm):
                 self.parameterAsConnectionName(parameters, 'GeopackageConnection', context))
             # connection.executeSql('select EnableGpkgAmphibiousMode()')
             connection.executeSql('%s' % self.init_sql(master_layer_pg, upload_layer_qgis, feedback)[0])
-            connection.disconnect()
+            #connection.disconnect()
         return results
 
     def start_connection(self, db_connection):
@@ -83,7 +83,7 @@ class Model(QgsProcessingAlgorithm):
             #     upload_layer.renameAttribute(idx, name.lower())
 
     def get_data_source_type(self, layer):
-        # geo_check = None
+        geo_check = ''
         source_type = layer.source()
         extension = '.gpkg'
 
@@ -124,8 +124,8 @@ class Model(QgsProcessingAlgorithm):
             'substation': {'country', 'substation_type', 'situation', 'utility'},
             'transformer': {'country', 'substation', 'utility', 'cooling', 'tap_ch', 'connection'},
             'reactor': {'country', 'substation', 'shunt_reac'},
-            'powerline': {'country1', 'country2', 'cable_type', 'ext1', 'ext2', 'powerline_type', 'situation',
-                          'utility'},
+            'powerline': {'situation', 'utility', 'country2', 'cable_type', 'ext1', 'country1', 'ext2',
+                          'powerline_type'},
             'generator': {'country', 'substation', 'utility', 'general_type'},
             'power_plant': {'country', 'general_type', 'situation', 'connection'}
         }
