@@ -147,10 +147,8 @@ class Model(QgsProcessingAlgorithm):
         for foreign_key in foreign_keys:
             table_schema, table_name, column_name, foreign_table_schema, foreign_table_name, \
                 foreign_column_name = foreign_key
-            if column_name in ["substation", "country"]:
-                column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
-            else:
-                column_name = db_feature.attribute("%s" % column_name)
+            # Fix special characters in attribute value
+            column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
             where_tables.append(f"{foreign_table_schema}.{foreign_table_name}")
             where_table_values.append(
                 f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'")
