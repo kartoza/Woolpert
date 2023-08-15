@@ -36,6 +36,8 @@ services:
       interval: 60s
       timeout: 10s
       retries: 10
+    ports:
+      - "8000:8000"
     environment:
       - IS_CELERY=False
     entrypoint: [ "/usr/src/woolpert/entrypoint.sh" ]
@@ -56,7 +58,7 @@ services:
   geonode:
     image: geonode/nginx:1.23.3
     build: ./docker/nginx/
-    container_name: nginx4${COMPOSE_PROJECT_NAME}
+    container_name: ${COMPOSE_PROJECT_NAME}_nginx
     environment:
       - HTTPS_HOST=${HTTPS_HOST}
       - HTTP_HOST=${HTTP_HOST}
@@ -74,7 +76,7 @@ services:
 
   # Geoserver backend
   geoserver:
-    image: geonode/geoserver:2.23.0
+    image: kartoza/geoserver:geonode-2.23.0.x
     container_name: ${COMPOSE_PROJECT_NAME}_geoserver
     healthcheck:
       test: "curl --fail --silent --write-out 'HTTP CODE : %{http_code}\n' --output /dev/null http://127.0.0.1:8080/geoserver/ows"
@@ -156,26 +158,6 @@ services:
     volumes:
       - rabbitmq:/var/lib/rabbitmq
     restart: on-failure
-
-  # django application for development
-  dev:
-    <<: *default-common-django
-    image: ${COMPOSE_PROJECT_NAME}/django_dev:4.0.x
-    container_name: ${COMPOSE_PROJECT_NAME}_dev
-    entrypoint: [ ]
-    build:
-      context: ../
-      dockerfile: deployment/docker/Dockerfile.dev
-      target: dev
-    depends_on:
-      - geoserver
-      - db
-      - celery
-    ports:
-      # for django test server
-      - "4002:8090"
-      # for ssh
-      - "4003:22"
 
 volumes:
   statics:
