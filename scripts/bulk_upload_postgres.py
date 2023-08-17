@@ -102,9 +102,13 @@ def fk_sql(db_connection, db_table, db_feature):
     foreign_keys = cursor.fetchall()
 
     # Initialize the lists to store the WHERE conditions
-    where_tables = []
-    where_table_values = []
-    
+    where_tables = set()
+    where_table_values = {}
+
+    # Define the fields for which 'OR' conditions should be applied
+    fields_to_or = ['public.substation.name', 'public.country.iso']
+
+    # Loop through the foreign keys and construct the WHERE conditions
     for foreign_key in foreign_keys:
         table_schema, table_name, column_name, foreign_table_schema, foreign_table_name, foreign_column_name = foreign_key
         if column_name in ["substation", "country"]:
@@ -112,20 +116,34 @@ def fk_sql(db_connection, db_table, db_feature):
         else:
             column_name = db_feature.attribute("%s" % column_name)
         
-        # Check if the table name is already in the list before appending
-        if f"{foreign_table_schema}.{foreign_table_name}" not in where_tables:
-            where_tables.append(f"{foreign_table_schema}.{foreign_table_name}")
+        table_identifier = f"{foreign_table_schema}.{foreign_table_name}"
+        where_tables.add(table_identifier)
         
         condition = f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'"
         
-        # Check if the condition should use OR or AND
-        if any(val in condition for val in ['public.substation.name', 'public.country.name']):
-            where_table_values.append(condition)
+        # Check if the current field requires an 'OR' condition
+        if any(field in condition for field in fields_to_or):
+            if table_identifier not in where_table_values:
+                where_table_values[table_identifier] = [f"({condition})"]
+            else:
+                where_table_values[table_identifier].append(f"({condition})")
         else:
-            where_table_values.append(f"({condition})")
+            if table_identifier not in where_table_values:
+                where_table_values[table_identifier] = [condition]
+            else:
+                where_table_values[table_identifier].append(condition)
 
-    # Build the SQL query based on the condition
-    sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(where_table_values)} "
+    # Construct the SQL query for each table
+    sql_parts = []
+    for table in where_tables:
+        if table in where_table_values:
+            conditions = ' OR '.join(where_table_values[table])
+            sql_parts.append(f"({conditions})")
+
+    # Combine the WHERE conditions into the final SQL query
+    sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(sql_parts)} "
+
+
     # Close the database connection
     conn.close()
     return sql_query
