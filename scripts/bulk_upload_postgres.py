@@ -104,19 +104,27 @@ def fk_sql(db_connection, db_table, db_feature):
     # Initialize the lists to store the WHERE conditions
     where_tables = []
     where_table_values = []
-
-    # Loop through the foreign keys and construct the WHERE conditions
+    
     for foreign_key in foreign_keys:
         table_schema, table_name, column_name, foreign_table_schema, foreign_table_name, foreign_column_name = foreign_key
         if column_name in ["substation", "country"]:
             column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
         else:
             column_name = db_feature.attribute("%s" % column_name)
-        where_tables.append(f"{foreign_table_schema}.{foreign_table_name}")
-        where_table_values.append(
-            f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'")
+        
+        # Check if the table name is already in the list before appending
+        if f"{foreign_table_schema}.{foreign_table_name}" not in where_tables:
+            where_tables.append(f"{foreign_table_schema}.{foreign_table_name}")
+        
+        condition = f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'"
+        
+        # Check if the condition should use OR or AND
+        if any(val in condition for val in ['public.substation.name', 'public.country.name']):
+            where_table_values.append(condition)
+        else:
+            where_table_values.append(f"({condition})")
 
-    # Combine the WHERE conditions into the final SQL query
+    # Build the SQL query based on the condition
     sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(where_table_values)} "
     # Close the database connection
     conn.close()
@@ -202,7 +210,7 @@ def init_sql(master_layer, upload_layer, db_connection):
         'reactor': layer_fk_columns(db_connection, 'reactor'),
         'powerline': layer_fk_columns(db_connection, 'powerline'),
         'generator': layer_fk_columns(db_connection, 'generator'),
-        'power_plant': layer_fk_columns(db_connection, 'power_plant')
+        'powerplant': layer_fk_columns(db_connection, 'powerplant')
     }
 
     if master_layer.name() in relation_columns:
