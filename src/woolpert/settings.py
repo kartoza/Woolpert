@@ -29,11 +29,7 @@ except ImportError:
     from urllib2 import urlopen, Request
     from urlparse import urlparse, urlunparse
 # Load more settings from a file called local_settings.py if it exists
-try:
-    from woolpert.local_settings import *
-#    from geonode.local_settings import *
-except ImportError:
-    from geonode.settings import *
+from geonode.settings import *
 
 #
 # General Django development settings
