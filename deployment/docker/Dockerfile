@@ -73,6 +73,7 @@ RUN chmod +x /usr/bin/celery-cmd
 #     cd /usr/src/geonode-contribs/ldap; pip install --upgrade  -e .
 # RUN python -m venv venv
 # RUN . ./venv/bin/activate
+RUN pip uninstall Django==3.2.19
 RUN pip install Django==3.2.19
 RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements.txt
 RUN pip install --upgrade  -e .
