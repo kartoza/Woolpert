@@ -502,7 +502,7 @@ INSTALLED_APPS = (
     "allauth.account",
     "allauth.socialaccount",
     # GeoNode
-    "geonode",
+    # "geonode",
 )
 
 markdown_white_listed_tags = [
