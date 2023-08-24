@@ -13,9 +13,40 @@ from qgis.core import QgsProcessingParameterDatabaseSchema
 from qgis.core import QgsProviderRegistry
 from qgis.core import QgsProcessingParameterBoolean
 from qgis.core import QgsProcessingException
+from qgis.core import NULL
 import processing
 from psycopg2 import connect, OperationalError
 import sys
+
+
+class DatabaseConnection(object):
+    def __init__(self, db_connection):
+        self.connection = None
+        self.db_connection = db_connection
+        self.connect()
+
+    def connect(self):
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
+        conn = md.createConnection(self.db_connection)
+        conn_uri = conn.uri()
+        if 'service' in conn_uri:
+            conn_uri = conn_uri.replace('estimatedmetadata=true', '')
+        else:
+            conn_uri = conn_uri.replace('estimatedmetadata=true', '')
+        try:
+            self.connection = connect(conn_uri)
+        except OperationalError:
+            raise QgsProcessingException(
+                'PostgreSQL connection cannot be established, exiting. Please check your connection params')
+            sys.exit(1)
+
+    def get_connection(self):
+        return self.connection
+
+    def disconnect(self):
+        if self.connection is not None:
+            self.connection.close()
+            self.connection = None
 
 
 class Model(QgsProcessingAlgorithm):
@@ -42,46 +73,30 @@ class Model(QgsProcessingAlgorithm):
         feedback = QgsProcessingMultiStepFeedback(1, model_feedback)
         results = {}
         outputs = {}
-
-        master_layer_pg = self.parameterAsLayer(parameters, 'master_vector_layer', context)
-        upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
-        print("The combined SQL is: ", self.init_sql(master_layer_pg, upload_layer_qgis,
-                                                     self.parameterAsConnectionName(parameters,
-                                                                                    'Connection', context),
-                                                     feedback,
-                                                     self.parameterAsSchema(parameters, 'Project', context))[0])
-        # Execute PostgreSQL  SQL
-
-        alg_params = {
-            'DATABASE': parameters['Connection'],
-            'SQL': '%s' % self.init_sql(master_layer_pg, upload_layer_qgis,
-                                        self.parameterAsConnectionName(parameters, 'Connection', context), feedback,
-                                        self.parameterAsSchema(parameters, 'Project', context))[0]
-        }
-        outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
-                                                         feedback=feedback, is_child_algorithm=True)
-        return results
-
-    def database_connection(self, db_connection):
-        connection_name = db_connection
-        md = QgsProviderRegistry.instance().providerMetadata('postgres')
-        conn = md.createConnection(connection_name)
-        conn_uri = conn.uri()
-        if 'service' in conn_uri:
-            conn_uri = conn_uri.replace('estimatedmetadata=true', '')
-        else:
-            conn_uri = conn_uri.replace('estimatedmetadata=true', '')
         try:
-            connection = connect(conn_uri)
-        except OperationalError:
-            raise QgsProcessingException(
-                'PostgreSQL connection cannot be established, exiting. Please check your connection paramaters')
-            sys.exit(1)
-        return connection
+            db_connection = self.parameterAsConnectionName(parameters, 'Connection', context)
+            db_conn = DatabaseConnection(db_connection)
+            connection = db_conn.get_connection()
+
+            master_layer_pg = self.parameterAsLayer(parameters, 'master_vector_layer', context)
+            upload_layer_qgis = self.parameterAsLayer(parameters, 'input_vector_layer', context)
+            # Execute PostgreSQL  SQL
+
+            alg_params = {
+                'DATABASE': parameters['Connection'],
+                'SQL': '%s' % self.init_sql(master_layer_pg, upload_layer_qgis,
+                                            connection, feedback,
+                                            self.parameterAsSchema(parameters, 'Project', context))[0]
+            }
+            outputs['PostgresqlExecuteSql'] = processing.run('native:postgisexecutesql', alg_params, context=context,
+                                                             feedback=feedback, is_child_algorithm=True)
+        finally:
+            db_conn.disconnect()
+        return results
 
     def geometry_column_name(self, db_connection, db_table):
         # Connect to the PostgreSQL database
-        conn = self.database_connection(db_connection)
+        conn = db_connection
         cursor = conn.cursor()
         # Define the SQL query to get foreign key relationships for the given table
         sql_query = f"""
@@ -94,7 +109,7 @@ class Model(QgsProcessingAlgorithm):
 
     def layer_data_types(self, db_connection, db_table, db_schema):
         # Connect to the PostgreSQL database
-        conn = self.database_connection(db_connection)
+        conn = db_connection
         cursor = conn.cursor()
         # Define the SQL query to get foreign key relationships for the given table
         sql_query = f"""
@@ -114,7 +129,7 @@ class Model(QgsProcessingAlgorithm):
 
     def fk_sql(self, db_connection, db_table, db_feature):
         # Connect to the PostgreSQL database
-        conn = self.database_connection(db_connection)
+        conn = db_connection
         cursor = conn.cursor()
         # Define the SQL query to get foreign key relationships for the given table
         sql_query = f"""
@@ -143,30 +158,52 @@ class Model(QgsProcessingAlgorithm):
         foreign_keys = cursor.fetchall()
 
         # Initialize the lists to store the WHERE conditions
-        where_tables = []
-        where_table_values = []
-
+        where_tables = set()
+        where_table_values = {}
+        # Define the fields for which 'OR' conditions should be applied
+        fields_to_or = ['public.substation.name', 'public.country.iso']
         # Loop through the foreign keys and construct the WHERE conditions
         for foreign_key in foreign_keys:
-            table_schema, table_name, column_name, foreign_table_schema, foreign_table_name, \
-                foreign_column_name = foreign_key
-            # Fix special characters in attribute value
-            column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
-            sql_where_tables = f"{foreign_table_schema}.{foreign_table_name}"
-            if sql_where_tables not in where_tables:
-                where_tables.append(sql_where_tables)
-            sql_where_table_values = f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'"
-            if sql_where_table_values not in where_table_values:
-                where_table_values.append(sql_where_table_values)
+            table_schema, table_name, column_name, foreign_table_schema, foreign_table_name, foreign_column_name = foreign_key
+            if column_name in ["substation", "country"]:
+                column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
+            else:
+                column_value = db_feature.attribute("%s" % column_name)
+                if column_value == NULL:
+                    column_name = db_feature.attribute("%s" % column_name)
+                else:
+                    column_name = db_feature.attribute("%s" % column_name).replace("'", "''")
+
+            table_identifier = f"{foreign_table_schema}.{foreign_table_name}"
+            where_tables.add(table_identifier)
+
+            condition = f"{foreign_table_schema}.{foreign_table_name}.{foreign_column_name} = '{column_name}'"
+
+            # Check if the current field requires an 'OR' condition
+            if any(field in condition for field in fields_to_or):
+                if table_identifier not in where_table_values:
+                    where_table_values[table_identifier] = [f"({condition})"]
+                else:
+                    where_table_values[table_identifier].append(f"({condition})")
+            else:
+                if table_identifier not in where_table_values:
+                    where_table_values[table_identifier] = [condition]
+                else:
+                    where_table_values[table_identifier].append(condition)
+
+        # Construct the SQL query for each table
+        sql_parts = []
+        for table in where_tables:
+            if table in where_table_values:
+                conditions = ' OR '.join(where_table_values[table])
+                sql_parts.append(f"({conditions})")
 
         # Combine the WHERE conditions into the final SQL query
-        sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(where_table_values)} "
-        # Close the database connection
-        conn.close()
+        sql_query = f"SELECT 1 FROM {', '.join(where_tables)} WHERE {' AND '.join(sql_parts)} "
         return sql_query
 
     def layer_fk_columns(self, db_connection, db_table):
-        connection = self.database_connection(db_connection)
+        connection = db_connection
         cursor = connection.cursor()
         sql = """SELECT key_column_usage.column_name 
         FROM information_schema.table_constraints 
@@ -187,7 +224,6 @@ class Model(QgsProcessingAlgorithm):
             fk_checker_dict = {}
         else:
             fk_checker_dict = {item[0] for item in fk_checker}
-        connection.close()
         return fk_checker_dict
 
     def layer_primary_key(self, master_layer):
@@ -200,7 +236,6 @@ class Model(QgsProcessingAlgorithm):
         return layer_pk
 
     def lowercase_field_names(self, upload_layer):
-        # This converts the field names to lowercase
         for field in upload_layer.fields():
             name = field.name()
             if name.islower():
@@ -209,9 +244,6 @@ class Model(QgsProcessingAlgorithm):
             idx = upload_layer.fields().indexFromName(name)
             upload_layer.renameAttribute(idx, name.lower())
             upload_layer.commitChanges()
-            # with edit(upload_layer):
-            #     idx = upload_layer.fields().indexFromName(name)
-            #     upload_layer.renameAttribute(idx, name.lower())
 
     def init_sql(self, master_layer, upload_layer, db_connection, feedback, db_schema):
         upload_layer_qgis_count = upload_layer.featureCount()
@@ -244,7 +276,7 @@ class Model(QgsProcessingAlgorithm):
             'reactor': self.layer_fk_columns(db_connection, 'reactor'),
             'powerline': self.layer_fk_columns(db_connection, 'powerline'),
             'generator': self.layer_fk_columns(db_connection, 'generator'),
-            'power_plant': self.layer_fk_columns(db_connection, 'power_plant')
+            'powerplant': self.layer_fk_columns(db_connection, 'powerplant')
         }
 
         if master_layer.name() in relation_columns:
@@ -269,7 +301,7 @@ class Model(QgsProcessingAlgorithm):
                                 if field in table_relation_columns:
 
                                     # Check for NULL values in the fields defined in relation_columns
-                                    if value is None:
+                                    if value == NULL:
                                         skip_row = True
                                         break
 
@@ -311,6 +343,7 @@ class Model(QgsProcessingAlgorithm):
                         else:
                             # Append the value string to the list of rows
                             sql_rows.append(value_string)
+                        print(" The final SQL is: ", sql_rows)
                     elif skip_row and len(attribute_values) == len(common_fields):
                         # Append the value string to the list of skipped rows
                         skipped_rows.append(value_string)
