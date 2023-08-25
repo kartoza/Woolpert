@@ -44,7 +44,7 @@
      
      <Rule>
         <Name>ruleGT1</Name>
-        <Title>Clustered Reactor Points</Title>
+        <Title>Clustered Transformer Points</Title>
         <ogc:Filter>
           <ogc:PropertyIsGreaterThanOrEqualTo>
             <ogc:PropertyName>count</ogc:PropertyName>
@@ -57,7 +57,7 @@
             <Mark>
               <WellKnownName>circle</WellKnownName>
               <Fill>
-                <CssParameter name="fill">#d447e6</CssParameter>
+                <CssParameter name="fill">#ff0000</CssParameter>
               </Fill>
             </Mark>
             <Size>15</Size>
@@ -83,7 +83,7 @@
           <Halo>
              <Radius>0</Radius>
              <Fill>
-               <CssParameter name="fill">#000000</CssParameter>
+               <CssParameter name="fill">#ff0000</CssParameter>
                <CssParameter name="fill-opacity">0.9</CssParameter>
              </Fill>
           </Halo>
@@ -94,21 +94,37 @@
         </TextSymbolizer>
       </Rule>
 	  <Rule>
-          <Name>Reactor Points</Name>
+      <Name>Transformer Points</Name>
 		  <MaxScaleDenominator>1000000</MaxScaleDenominator>
           <PointSymbolizer>
             <Graphic>
               <Mark>
-                <WellKnownName>circle</WellKnownName>
+                <WellKnownName>cross2</WellKnownName>
                 <Fill>
-                  <CssParameter name="fill">#d447e6</CssParameter>
+                  <CssParameter name="fill">#ff0000</CssParameter>
                 </Fill>
                 <Stroke>
-                  <CssParameter name="stroke">#232323</CssParameter>
+                  <CssParameter name="stroke">#ff0000</CssParameter>
                   <CssParameter name="stroke-width">0.5</CssParameter>
                 </Stroke>
               </Mark>
               <Size>7</Size>
+            </Graphic>
+          </PointSymbolizer>
+        <PointSymbolizer>
+            <Graphic>
+              <Mark>
+                <WellKnownName>cross2</WellKnownName>
+                <Fill>
+                  <CssParameter name="fill">#ff0000</CssParameter>
+                </Fill>
+                <Stroke>
+                  <CssParameter name="stroke">#ff0000</CssParameter>
+                  <CssParameter name="stroke-width">0.5</CssParameter>
+                </Stroke>
+              </Mark>
+              <Size>7</Size>
+              <Rotation>45</Rotation>
             </Graphic>
           </PointSymbolizer>
         </Rule>

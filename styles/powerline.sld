@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor xmlns="http://www.opengis.net/sld" version="1.1.0" xmlns:ogc="http://www.opengis.net/ogc" xmlns:se="http://www.opengis.net/se" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <NamedLayer>
-    <se:Name>ecowas_power_lines_gcs_wgs84_wapp</se:Name>
+    <se:Name>powerlines</se:Name>
     <UserStyle>
-      <se:Name>ecowas_power_lines_gcs_wgs84_wapp</se:Name>
+      <se:Name>powerlines</se:Name>
       <se:FeatureTypeStyle>
         <se:Rule>
           <se:Name>110 Existing11</se:Name>
